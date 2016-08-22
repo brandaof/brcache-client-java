@@ -30,10 +30,12 @@ class BRCacheReceiver {
 			if(c != -1){
 				
 				this.in.reset();
-				byte[] buf = new byte[i - 2];
-				this.in.read(buf, 0, buf.length);
+				byte[] buf = new byte[i];
+				this.in.read(buf, 0, buf.length - 2);
 				
-				if(!Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, buf)){
+				String result = new String(buf);
+				
+				if(!BrCacheConnectionImp.SUCCESS.equals(result)){
 					throw new StorageException(new String(buf));
 				}
 				
@@ -52,21 +54,23 @@ class BRCacheReceiver {
 		
 	}
 
-	public String getGetResult() throws IOException{
+	public Object getGetResult() throws IOException{
 		
 		this.in.mark(256);
 		
 		int c;
 		int i = 0;
+		
 		while((c = this.in.read()) != -1 && c != '\n'){
 			i++;
 		}
 		
 		if(c != -1){
 			this.in.reset();
-			byte[] buf = new byte[i - 2];
-			this.in.read(buf, 0, buf.length);
-			return new String(buf);
+			byte[] buf = new byte[i];
+			this.in.read(buf, 0, buf.length - 2);
+			String header = new String(buf);
+			
 		}
 		else{
 			throw new IOException("premature end of data");
@@ -74,4 +78,37 @@ class BRCacheReceiver {
 		
 	}
 	
+	public Object getObject() throws IOException{
+		
+		this.in.mark(256);
+		
+		int c;
+		int i = 0;
+		
+		while((c = this.in.read()) != -1 && c != '\n'){
+			i++;
+		}
+		
+		if(c != -1){
+			this.in.reset();
+			byte[] buf = new byte[i];
+			this.in.read(buf, 0, buf.length - 2);
+			String header = new String(buf);
+			
+			if(header.startsWith(BrCacheConnectionImp.VALUE_RESULT)){
+				String
+			}
+			else
+			if(header.equals(BrCacheConnectionImp.BOUNDARY)){
+				return null;
+			}
+			else
+				throw new IOException("expected END: " + header);
+		}
+		else{
+			throw new IOException("premature end of data");
+		}
+		
+	}
+
 }
