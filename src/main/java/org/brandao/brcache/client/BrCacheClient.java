@@ -165,12 +165,12 @@ public class BrCacheClient implements BrCacheConnection{
      * @throws RecoverException Lançada se ocorrer alguma falha ao 
      * tentar remover o item do cache.
      */
-    public boolean remove(String key) throws RecoverException {
+    public boolean remove(String key) throws StorageException {
         try{
             return (Boolean)tryExecuteAction(removeMethod, new Object[]{key});
         }
         catch(Throwable e){
-            throw new RecoverException(e);
+            throw new StorageException(e);
         }
     }
 

@@ -22,8 +22,6 @@ import java.lang.reflect.Proxy;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
-import org.brandao.brcache.server.DefaultStreamFactory;
-import org.brandao.brcache.server.StreamFactory;
 
 /**
  * Controla as conexões com o servidor.

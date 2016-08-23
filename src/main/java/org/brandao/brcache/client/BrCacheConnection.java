@@ -69,10 +69,10 @@ public interface BrCacheConnection extends Closeable{
      * 
      * @param key Identificação do item no cache.
      * @return Verdadeiro se o item for removido. Caso contrário falso.
-     * @throws RecoverException Lançada se ocorrer alguma falha ao tentar remover o
+     * @throws StorageException Lançada se ocorrer alguma falha ao tentar remover o
      * item do cache.
      */
-    boolean remove(String key) throws RecoverException;
+    boolean remove(String key) throws StorageException;
     
     /**
      * Obtém o endereço do servidor.

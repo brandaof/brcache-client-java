@@ -17,24 +17,10 @@
 
 package org.brandao.brcache.client;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Arrays;
+import java.util.List;
 import java.util.zip.CRC32;
-
-import org.brandao.brcache.server.DefaultStreamFactory;
-import org.brandao.brcache.server.LimitedTextInputStreamReader;
-import org.brandao.brcache.server.ReadDataException;
-import org.brandao.brcache.server.StreamFactory;
-import org.brandao.brcache.server.TerminalReader;
-import org.brandao.brcache.server.TerminalWriter;
-import org.brandao.brcache.server.TextTerminalReader;
-import org.brandao.brcache.server.TextTerminalWriter;
-import org.brandao.brcache.server.WriteDataException;
 
 /**
  * Permite o armazenamento, atualização, remoção de um item em um servidor BrCache.
@@ -61,6 +47,8 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     
     public static final String SUCCESS                   = "OK";
 
+    public static final String NOT_FOUND                 = "NOT_FOUND";
+    
     public static final String SEPARATOR_COMMAND         = " ";
 	
 	
@@ -82,6 +70,8 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     
     public static final byte[] SUCCESS_DTA               = "OK".getBytes();
 
+    public static final byte[] NOT_FOUND_DTA             = "NOT_FOUND".getBytes();
+    
     public static final byte[] SEPARATOR_COMMAND_DTA     = " ".getBytes();
 
     public static final String ENCODE                   = "UTF-8";
@@ -133,7 +123,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 
     	try{
 	    	this.sender.executePut(key, time, value);
-	        String result = this.receiver.getPutResult();
+	        this.receiver.processPutResult();
     	}
     	catch(StorageException e){
     		throw e;
@@ -148,11 +138,8 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     	
     	try{
 	    	this.sender.executeGet(key);
-	        String result = this.receiver.getGetResult();
-	        
-	        if(!SUCCESS.equals(result)){
-	        	throw new StorageException(result);
-	        }
+	        List<Object> result = this.receiver.processGetResult();
+	        return result.isEmpty()? null : result.get(0);
     	}
     	catch(RecoverException e){
     		throw e;
@@ -161,118 +148,21 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     		throw new RecoverException(e);
     	}
     	
-    	String cmd =
-    			GET_COMMAND + SEPARATOR_COMMAND +
-    			key;
-    	
-    	try{
-        	this.writer.sendMessage(cmd);
-        	this.writer.flush();
-    	}
-    	catch(WriteDataException ex){
-            ex.printStackTrace();
-            throw new RecoverException("send data fail: " + key, ex.getCause());
-    	}
-    	
-    	try{
-            String result = this.reader.getMessage();
-            
-            if(!result.startsWith(VALUE_RESULT))
-                throw new RecoverException(result.toString());
-            
-            String[] resultParams = new String[4];
-            int index = 0;
-            int start = 0;
-            int end;
-            while((end = result.indexOf(' ', start)) != -1){
-            	String part = result.substring(start, end);
-            	resultParams[index++] = part;
-            	start = end + 1;
-            }
-            resultParams[index] = result.substring(start, result.length());
-
-            int size = Integer.parseInt(resultParams[2]);
-    		
-            LimitedTextInputStreamReader in = null;
-            
-            try{
-                if(size != 0){
-                    in = (LimitedTextInputStreamReader) this.reader.getStream(size);
-                    ObjectInputStream stream = new ObjectInputStream(in);
-                    return stream.readObject();
-                }
-                else
-                    return null;
-            }
-            finally{
-                if(in != null){
-                    try{
-                        in.close();
-                    }
-                    catch(Exception e){}
-                }
-                
-                String boundary = this.reader.getMessage();
-                
-                if(!BOUNDARY.equals(boundary))
-                    throw new RecoverException("read entry fail");
-            }
-            
-    	}
-        catch (ReadDataException ex) {
-            ex.printStackTrace();
-        	if(ex.getCause() instanceof IOException && !"premature end of data".equals(ex.getCause().getMessage()))
-                throw new RecoverException("read entry " + key + " fail: " + ex.getMessage(), ex);
-        	else
-        		throw new RecoverException("read entry " + key + " fail: " + ex.getMessage());
-		}
-        catch (IOException ex) {
-            ex.printStackTrace();
-        	if(ex.getCause() instanceof IOException && !"premature end of data".equals(ex.getCause().getMessage()))
-                throw new RecoverException("read data fail: " + ex.getMessage(), ex);
-        	else
-        		throw new RecoverException("read entry " + key + " fail: " + ex.getMessage());
-		}
-        catch(ClassNotFoundException ex){
-            ex.printStackTrace();
-            throw new RecoverException("create instance fail: " + ex.getMessage(), ex);
-        }
-
     }
 
-    public synchronized boolean remove(String key) throws RecoverException{
-
-    	String cmd = 
-    			REMOVE_COMMAND + SEPARATOR_COMMAND +
-    			key;
+    public synchronized boolean remove(String key) throws StorageException{
 
     	try{
-        	this.writer.sendMessage(cmd);
-        	this.writer.flush();
+	    	this.sender.executeRemove(key);
+	        return this.receiver.processRemoveResult();
     	}
-    	catch(WriteDataException ex){
-            ex.printStackTrace();
-        	if(ex.getCause() instanceof IOException && !"premature end of data".equals(ex.getCause().getMessage()))
-                throw new RecoverException("remove entry " + key + " fail: " + ex.getMessage(), ex);
-        	else
-        		throw new RecoverException("remove entry " + key + " fail: " + ex.getMessage());
+    	catch(StorageException e){
+    		throw e;
+    	}
+    	catch(Throwable e){
+    		throw new StorageException(e);
     	}
     	
-        try{
-            String response = this.reader.getMessage();
-            
-            if(!SUCCESS.equals(response))
-                throw new RecoverException(response);
-
-            return true;
-        }
-        catch (ReadDataException ex) {
-            ex.printStackTrace();
-        	if(ex.getCause() instanceof IOException && !"premature end of data".equals(ex.getCause().getMessage()))
-                throw new RecoverException("remove entry " + key + " fail: " + ex.getMessage(), ex);
-        	else
-        		throw new RecoverException("remove entry " + key + " fail: " + ex.getMessage());
-        }
     }
     
     public String getHost() {

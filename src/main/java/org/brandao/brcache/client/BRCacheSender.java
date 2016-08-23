@@ -63,6 +63,14 @@ class BRCacheSender {
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		out.flush();
 	}
+
+	public void executeRemove(String key) throws IOException{
+		out.write(BrCacheConnectionImp.REMOVE_COMMAND_DTA);	
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		out.write(key.getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		out.flush();
+	}
 	
 	private byte[] toBytes(Object value) throws IOException{
 		
