@@ -5,7 +5,6 @@
 	<artifactId>brcache-client</artifactId>
 	<version>1.0-b3</version>
 
-
 	<name>brcache-client</name>
 	<description>Java BRCache client</description>
 	<url>http://brcache.brandao.org/</url>
