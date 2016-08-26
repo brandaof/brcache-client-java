@@ -111,5 +111,8 @@ public class CacheSwapper
             client.remove(new String(this.id + ":" + i));
         }
     }
+
+	public void destroy() {
+	}
     
 }
