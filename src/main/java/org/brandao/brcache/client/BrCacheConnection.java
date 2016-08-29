@@ -20,9 +20,6 @@ package org.brandao.brcache.client;
 import java.io.Closeable;
 import java.io.IOException;
 
-import org.brandao.brcache.RecoverException;
-import org.brandao.brcache.StorageException;
-
 /**
  * Permite o armazenamento, atualização, remoção de um item em um servidor BrCache.
  * 
@@ -46,6 +43,43 @@ public interface BrCacheConnection extends Closeable{
      */
     void disconect() throws IOException;
     
+	/* métodos de coleta*/
+    
+    /**
+     * Substitui o valor associado à chave somente se ele existir.
+     * @param key chave associada ao valor.
+     * @param value valor para ser associado à chave.
+     * @param maxAliveTime tempo máximo de vida do valor no cache.
+     * @return o valor anterior associado à chave.
+     * @throws StorageException Lançada se ocorrer alguma falha ao tentar inserir o item.
+     */
+	boolean replace(
+			String key, Object value, long timeToLive, long timeToIdle) throws StorageException;
+    
+	/**
+	 * Substitui o valor associado à chave somente se ele for igual a um determinado valor.
+	 * @param key chave associada ao valor.
+	 * @param oldValue valor esperado associado à chave.
+	 * @param newValue valor para ser associado à chave.
+	 * @param maxAliveTime tempo máximo de vida do valor no cache.
+	 * @return <code>true</code> se o valor for substituido. Caso contrário, <code>false</code>.
+     * @throws StorageException Lançada se ocorrer alguma falha ao tentar inserir o item.
+	 */
+	boolean replace(
+			String key, Object oldValue, 
+			Object newValue, long timeToLive, long timeToIdle) throws StorageException;
+	
+	/**
+	 * Associa o valor a chave somente se a chave não estiver associada a um valor.
+	 * @param key chave associada ao valor.
+	 * @param value valor para ser associado à chave.
+	 * @param maxAliveTime tempo máximo de vida do valor no cache.
+	 * @return valor anterior associado à chave.
+     * @throws StorageException Lançada se ocorrer alguma falha ao tentar inserir o item.
+	 */
+	Object putIfAbsent(
+			String key, Object value, long timeToLive, long timeToIdle) throws StorageException;
+	
 	/**
 	 * Associa o valor à chave.
 	 * @param key chave associada ao valor.
@@ -68,6 +102,29 @@ public interface BrCacheConnection extends Closeable{
     Object get(String key, boolean forUpdate) throws RecoverException;
 
 	/**
+     * Obtém o valor associado à chave bloqueando ou não 
+     * seu acesso as demais transações.
+     * @param key chave associada ao valor.
+     * @return valor associado à chave ou <code>null</code>.
+     * @throws RecoverException Lançada se ocorrer alguma falha ao tentar obter o
+     * item.
+	 */
+    Object get(String key) throws RecoverException;
+    
+    /* métodos de remoção */
+    
+	/**
+	 * Remove o valor assoiado à chave somente se ele for igual a um determinado valor.
+	 * @param key chave associada ao valor.
+	 * @return valor para ser associado à chave.
+	 * @return <code>true</code> se o valor for removido. Caso contrário, <code>false</code>.
+	 * @throws StorageException Lançada se ocorrer alguma falha ao tentar remover o
+     * item.
+	 */
+	boolean remove(
+			String key, Object value) throws StorageException;
+    
+	/**
 	 * Remove o valor associado à chave.
 	 * @param key chave associada ao valor.
 	 * @return <code>true</code> se o valor for removido. Caso contrário, <code>false</code>.
@@ -75,6 +132,14 @@ public interface BrCacheConnection extends Closeable{
      * item.
 	 */
     boolean remove(String key) throws StorageException;
+    
+    void setAutoCommit(boolean value);
+    
+    boolean isAutoCommit();
+    
+    void commit();
+    
+    void rollback();
     
     /**
      * Obtém o endereço do servidor.
@@ -88,5 +153,5 @@ public interface BrCacheConnection extends Closeable{
      */
     int getPort();
     
-
+    
 }

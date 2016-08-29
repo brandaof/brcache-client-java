@@ -36,6 +36,7 @@ class BRCacheSender {
     			new BufferedOutputStream(
     					streamFactory.createOutputStream(socket), bufferLength);
     }
+    
 	public void executePut(String key, long time, Object value) throws IOException {
 		
 		byte[] data = this.toBytes(value);
@@ -56,10 +57,14 @@ class BRCacheSender {
 		out.flush();
 	}
 	
-	public void executeGet(String key) throws IOException{
-		out.write(BrCacheConnectionImp.GET_COMMAND_DTA);	
+	public void executeGet(String key, boolean forUpdate) throws IOException{
+		out.write(BrCacheConnectionImp.GET_COMMAND_DTA);
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 		out.write(key.getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		out.write(forUpdate? '1' : '0');
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		out.write('0');
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		out.flush();
 	}

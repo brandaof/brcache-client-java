@@ -22,6 +22,8 @@ import java.net.Socket;
 import java.util.List;
 import java.util.zip.CRC32;
 
+import org.junit.internal.Throwables;
+
 /**
  * Permite o armazenamento, atualização, remoção de um item em um servidor BrCache.
  * 
@@ -118,6 +120,58 @@ public class BrCacheConnectionImp implements BrCacheConnection{
         this.receiver = null;
     }
     
+	/* métodos de armazenamento */
+
+	public boolean replace(
+			String key, Object value, long timeToLive, long timeToIdle) throws StorageException{
+		
+		boolean localTransaction = false;
+		
+		if(this.isAutoCommit()){
+			localTransaction = true;
+			this.setAutoCommit(false);
+		}
+		
+		try{
+			Object o = this.get(key, true);
+			boolean result;
+			if(o != null && o.equals(value)){
+				result = this.remove(key);
+			}
+			else
+				result = false;
+			
+			if(localTransaction){
+				this.commit();
+			}
+			return result;
+		}
+		catch(RecoverException e){
+			throw new StorageException(e.getMessage());
+		}
+		catch(StorageException e){
+			throw e;
+		}
+		catch(Throwable e){
+			try{
+				if(localTransaction){
+					this.rollback();
+				}
+			}
+			catch(Throwable ex){
+				throw new StorageException("rollback fail: " + ex.toString(), e);
+			}
+			
+			if(e instanceof RecoverException)
+				throw new StorageException(e.getMessage(), e);
+			else
+			if(e instanceof StorageException)
+				throw (StorageException)e;
+			else
+				throw new StorageException(e.getMessage());
+		}		
+	}
+    
     public void put(String key, long time, Object value) 
             throws StorageException{
 
@@ -133,11 +187,17 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     	}
         
     }
+
+	/* métodos de coleta*/
     
     public Object get(String key) throws RecoverException{
+    	return this.get(key, false);
+    }
+    
+    public Object get(String key, boolean forUpdate) throws RecoverException{
     	
     	try{
-	    	this.sender.executeGet(key);
+	    	this.sender.executeGet(key, forUpdate);
 	        List<Object> result = this.receiver.processGetResult();
 	        return result.isEmpty()? null : result.get(0);
     	}
@@ -150,6 +210,59 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     	
     }
 
+    /* métodos de remoção */
+
+	public boolean remove(
+			String key, Object value) throws StorageException{
+		
+		boolean localTransaction = false;
+		
+		if(this.isAutoCommit()){
+			localTransaction = true;
+			this.setAutoCommit(false);
+		}
+		
+		try{
+			Object o = this.get(key, true);
+			boolean result;
+			if(o != null && o.equals(value)){
+				result = this.remove(key);
+			}
+			else
+				result = false;
+			
+			if(localTransaction){
+				this.commit();
+			}
+			return result;
+		}
+		catch(RecoverException e){
+			throw new StorageException(e.getMessage());
+		}
+		catch(StorageException e){
+			throw e;
+		}
+		catch(Throwable e){
+			try{
+				if(localTransaction){
+					this.rollback();
+				}
+			}
+			catch(Throwable ex){
+				throw new StorageException("rollback fail: " + ex.toString(), e);
+			}
+			
+			if(e instanceof RecoverException)
+				throw new StorageException(e.getMessage(), e);
+			else
+			if(e instanceof StorageException)
+				throw (StorageException)e;
+			else
+				throw new StorageException(e.getMessage());
+		}
+		
+	}
+    
     public boolean remove(String key) throws StorageException{
 
     	try{
