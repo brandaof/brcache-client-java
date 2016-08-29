@@ -49,6 +49,10 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     
     public static final String SUCCESS                   = "ok";
 
+    public static final String PUT_SUCCESS               = "stored";
+
+    public static final String REPLACE_SUCCESS           = "replaced";
+    
     public static final String NOT_FOUND                 = "not_found";
     
     public static final String SEPARATOR_COMMAND         = " ";
@@ -72,6 +76,10 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     
     public static final byte[] SUCCESS_DTA               = "ok".getBytes();
 
+    public static final byte[] PUT_SUCCESS_DTA           = "stored".getBytes();
+    
+    public static final byte[] REPLACE_SUCCESS_DTA       = "replaced".getBytes();
+    
     public static final byte[] NOT_FOUND_DTA             = "not_found".getBytes();
     
     public static final byte[] SEPARATOR_COMMAND_DTA     = " ".getBytes();
@@ -172,12 +180,12 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 		}		
 	}
     
-    public void put(String key, long timeToLive, long timeToIdle, Object value) 
-            throws StorageException{
+    public boolean put(String key, long timeToLive, long timeToIdle, Object value) 
+            throws StorageException {
 
     	try{
-	    	this.sender.executePut(key, time, value);
-	        this.receiver.processPutResult();
+	    	this.sender.executePut(key, timeToLive, timeToIdle, value);
+	        return this.receiver.processPutResult();
     	}
     	catch(StorageException e){
     		throw e;

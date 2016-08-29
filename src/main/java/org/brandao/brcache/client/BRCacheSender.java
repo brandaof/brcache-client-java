@@ -37,22 +37,33 @@ class BRCacheSender {
     					streamFactory.createOutputStream(socket), bufferLength);
     }
     
-	public void executePut(String key, long time, Object value) throws IOException {
+	public void executePut(String key, long timeToLive, long timeToIdle, Object value) throws IOException {
 		
+		//put <key> <timeToLive> <timeToIdle> <size> <reserved>\r\n
+
 		byte[] data = this.toBytes(value);
 		
-		out.write(BrCacheConnectionImp.PUT_COMMAND_DTA);	
+		out.write(BrCacheConnectionImp.PUT_COMMAND_DTA);
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
 		out.write(key.getBytes(BrCacheConnectionImp.ENCODE));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
 		out.write(BrCacheConnectionImp.DEFAULT_FLAGS_DTA);
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
-		out.write(Long.toString(time).getBytes(BrCacheConnectionImp.ENCODE));
+		
+		out.write(Long.toString(timeToLive).getBytes(BrCacheConnectionImp.ENCODE));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+
+		out.write(Long.toString(timeToIdle).getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
 		out.write(Integer.toString(data.length).getBytes(BrCacheConnectionImp.ENCODE));
 		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
 		out.write(data, 0, data.length);
 		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
 		out.write(BrCacheConnectionImp.BOUNDARY_DTA);
 		out.flush();
 	}

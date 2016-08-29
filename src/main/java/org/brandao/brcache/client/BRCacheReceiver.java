@@ -41,17 +41,27 @@ class BRCacheReceiver {
 		
 	}
 
-	public void processPutResult() throws IOException, StorageException{
+	public boolean processPutResult() throws IOException, StorageException{
 		
 		try{
 			String result = this.getLine();
 			
-			if(!BrCacheConnectionImp.SUCCESS.equals(result)){
+			if(BrCacheConnectionImp.PUT_SUCCESS.equals(result)){
+				return false;
+			}
+			else
+			if(BrCacheConnectionImp.REPLACE_SUCCESS.equals(result)){
+				return true;
+			}
+			else{
 				throw new StorageException(result);
 			}
 		}
 		catch(StorageException e){
 			throw e;
+		}
+		catch(Throwable e){
+			throw new StorageException(e);
 		}
 		
 	}
