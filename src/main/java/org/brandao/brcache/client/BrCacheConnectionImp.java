@@ -103,13 +103,13 @@ public class BrCacheConnectionImp implements BrCacheConnection{
         this.streamFactory = streamFactory;
     }
     
-    public synchronized void connect() throws IOException{
+    public void connect() throws IOException{
         this.socket   = new Socket(this.getHost(), this.getPort());
         this.sender   = new BRCacheSender(socket, streamFactory, 8*1024);
         this.receiver = new BRCacheReceiver(socket, streamFactory, 8*1024);
     }
     
-    public synchronized void disconect() throws IOException{
+    public void disconect() throws IOException{
         
         if(this.socket != null)
             this.socket.close();
@@ -118,7 +118,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
         this.receiver = null;
     }
     
-    public synchronized void put(String key, long time, Object value) 
+    public void put(String key, long time, Object value) 
             throws StorageException{
 
     	try{
@@ -134,7 +134,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
         
     }
     
-    public synchronized Object get(String key) throws RecoverException{
+    public Object get(String key) throws RecoverException{
     	
     	try{
 	    	this.sender.executeGet(key);
@@ -150,7 +150,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     	
     }
 
-    public synchronized boolean remove(String key) throws StorageException{
+    public boolean remove(String key) throws StorageException{
 
     	try{
 	    	this.sender.executeRemove(key);
