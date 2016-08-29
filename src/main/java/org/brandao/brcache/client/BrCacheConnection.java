@@ -20,6 +20,9 @@ package org.brandao.brcache.client;
 import java.io.Closeable;
 import java.io.IOException;
 
+import org.brandao.brcache.RecoverException;
+import org.brandao.brcache.StorageException;
+
 /**
  * Permite o armazenamento, atualização, remoção de um item em um servidor BrCache.
  * 
@@ -43,35 +46,34 @@ public interface BrCacheConnection extends Closeable{
      */
     void disconect() throws IOException;
     
-    /**
-     * Inclui ou sobrescreve um objeto no cache.
-     * 
-     * @param key Identificação do objeto no cache.
-     * @param time Tempo máximo em milesegundos que o objeto ficará no cache.
-     * @param value Objeto a ser incluído no cache.
-     * @throws StorageException Lançada se ocorrer alguma falha ao tentar inserir o
-     * objeto no cache.
-     */
-    void put(String key, long time, Object value) throws StorageException;
+	/**
+	 * Associa o valor à chave.
+	 * @param key chave associada ao valor.
+	 * @param value valor para ser associado à chave.
+	 * @param timeToLive é a quantidade máxima de tempo que um item expira após sua criação.
+	 * @param timeToIdle é a quantidade máxima de tempo que um item expira após o último acesso.
+     * @throws StorageException Lançada se ocorrer alguma falha ao tentar inserir o item.
+	 */
+    void put(String key, long timeToLive, long timeToIdle, Object value) throws StorageException;
     
-    /**
-     * Recupera um objeto do cache.
-     * 
-     * @param key Identificação do objeto no cache.
-     * @return Objeto ou <code>null</code>.
-     * @throws RecoverException Lançada se ocorrer alguma falha ao tentar recuperar o
-     * objeto do cache.
-     */
-    Object get(String key) throws RecoverException;
+	/**
+     * Obtém o valor associado à chave bloqueando ou não 
+     * seu acesso as demais transações.
+     * @param key chave associada ao valor.
+     * @param forUpdate <code>true</code> para bloquear o item. Caso contrário <code>false</code>.
+     * @return valor associado à chave ou <code>null</code>.
+     * @throws RecoverException Lançada se ocorrer alguma falha ao tentar obter o
+     * item.
+	 */
+    Object get(String key, boolean forUpdate) throws RecoverException;
 
-    /**
-     * Remove um objeto do cache.
-     * 
-     * @param key Identificação do item no cache.
-     * @return Verdadeiro se o item for removido. Caso contrário falso.
-     * @throws StorageException Lançada se ocorrer alguma falha ao tentar remover o
-     * item do cache.
-     */
+	/**
+	 * Remove o valor associado à chave.
+	 * @param key chave associada ao valor.
+	 * @return <code>true</code> se o valor for removido. Caso contrário, <code>false</code>.
+	 * @throws StorageException Lançada se ocorrer alguma falha ao tentar remover o
+     * item.
+	 */
     boolean remove(String key) throws StorageException;
     
     /**
