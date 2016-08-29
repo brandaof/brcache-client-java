@@ -33,21 +33,21 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 
     public static final String DEFAULT_FLAGS             = "0";
     
-    public static final String BOUNDARY                  = "END";
+    public static final String BOUNDARY                  = "end";
     
     public static final String PUT_COMMAND               = "put";
 
-    public static final String ERROR                     = "ERROR";
+    public static final String ERROR                     = "error";
     
     public static final String GET_COMMAND               = "get";
     
     public static final String REMOVE_COMMAND            = "remove";
 
-    public static final String VALUE_RESULT              = "VALUE";
+    public static final String VALUE_RESULT              = "value";
     
-    public static final String SUCCESS                   = "OK";
+    public static final String SUCCESS                   = "ok";
 
-    public static final String NOT_FOUND                 = "NOT_FOUND";
+    public static final String NOT_FOUND                 = "not_found";
     
     public static final String SEPARATOR_COMMAND         = " ";
 	
@@ -56,21 +56,21 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 
     public static final byte[] DEFAULT_FLAGS_DTA         = "0".getBytes();
     
-    public static final byte[] BOUNDARY_DTA              = "END".getBytes();
+    public static final byte[] BOUNDARY_DTA              = "end".getBytes();
     
     public static final byte[] PUT_COMMAND_DTA           = "put".getBytes();
 
-    public static final byte[] ERROR_DTA                 = "ERROR".getBytes();
+    public static final byte[] ERROR_DTA                 = "error".getBytes();
     
     public static final byte[] GET_COMMAND_DTA           = "get".getBytes();
     
     public static final byte[] REMOVE_COMMAND_DTA        = "remove".getBytes();
 
-    public static final byte[] VALUE_RESULT_DTA          = "VALUE".getBytes();
+    public static final byte[] VALUE_RESULT_DTA          = "value".getBytes();
     
-    public static final byte[] SUCCESS_DTA               = "OK".getBytes();
+    public static final byte[] SUCCESS_DTA               = "ok".getBytes();
 
-    public static final byte[] NOT_FOUND_DTA             = "NOT_FOUND".getBytes();
+    public static final byte[] NOT_FOUND_DTA             = "not_found".getBytes();
     
     public static final byte[] SEPARATOR_COMMAND_DTA     = " ".getBytes();
 
