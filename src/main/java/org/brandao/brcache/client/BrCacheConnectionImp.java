@@ -172,7 +172,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 		}		
 	}
     
-    public void put(String key, long time, Object value) 
+    public void put(String key, long timeToLive, long timeToIdle, Object value) 
             throws StorageException{
 
     	try{
