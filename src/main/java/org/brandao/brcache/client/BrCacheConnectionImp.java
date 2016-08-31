@@ -89,7 +89,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     
     public static final byte[] REPLACE_SUCCESS_DTA       = "replaced".getBytes();
 
-    public static final byte[] NOT_STORED_SUCCESS_DTA    = "not_stored".getBytes();
+    public static final byte[] NOT_STORED_DTA            = "not_stored".getBytes();
     
     public static final byte[] NOT_FOUND_DTA             = "not_found".getBytes();
     

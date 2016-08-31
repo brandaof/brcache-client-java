@@ -109,7 +109,8 @@ class BRCacheSender {
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		
 		out.flush();
-	}	
+	}
+	
 	public void executeGet(String key, boolean forUpdate) throws IOException{
 		/*
 			get <key> <update> <reserved>\r\n

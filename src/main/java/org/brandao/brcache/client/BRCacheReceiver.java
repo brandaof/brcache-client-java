@@ -51,11 +51,11 @@ class BRCacheReceiver {
 		try{
 			byte[] result = this.getLine();
 			
-			if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA,result)){
+			if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA, result)){
 				return false;
 			}
 			else
-			if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA,result)){
+			if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA, result)){
 				return true;
 			}
 			else{
@@ -80,11 +80,11 @@ class BRCacheReceiver {
 		try{
 			byte[] result = this.getLine();
 			
-			if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA,result)){
+			if(Arrays.equals(BrCacheConnectionImp.NOT_STORED_DTA, result)){
 				return false;
 			}
 			else
-			if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA,result)){
+			if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA, result)){
 				return true;
 			}
 			else{
@@ -114,6 +114,10 @@ class BRCacheReceiver {
 	
 	private CacheEntry getObject() throws IOException, RecoverException{
 
+		/*
+		 * <data>\r\n
+		 * end\r\n
+		 */
 		String header = this.getLine();
 
 		if(header.startsWith(BrCacheConnectionImp.VALUE_RESULT)){
