@@ -18,7 +18,7 @@ class BRCacheReceiver {
     					streamFactory.createInpuStream(socket), bufferLength);
 	}
 	
-	private String getLine() throws IOException{
+	private byte[] getLine() throws IOException{
 		
 		int c;
 		int i = 0;
@@ -33,7 +33,8 @@ class BRCacheReceiver {
 			this.in.reset();
 			byte[] buf = new byte[i];
 			this.in.read(buf, 0, buf.length);
-			return new String(buf, 0, buf.length - 2);
+			//return new String(buf, 0, buf.length - 2);
+			return Arrays.copyOf(buf, buf.length - 2);
 		}
 		else{
 			throw new IOException("premature end of data");
@@ -43,18 +44,22 @@ class BRCacheReceiver {
 
 	public boolean processPutResult() throws IOException, StorageException{
 		
+		/*
+		 * stored | replaced | <error>
+		 */
+		
 		try{
-			String result = this.getLine();
+			byte[] result = this.getLine();
 			
-			if(BrCacheConnectionImp.PUT_SUCCESS.equals(result)){
+			if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA,result)){
 				return false;
 			}
 			else
-			if(BrCacheConnectionImp.REPLACE_SUCCESS.equals(result)){
+			if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA,result)){
 				return true;
 			}
 			else{
-				throw new StorageException(result);
+				throw new StorageException(new String(result));
 			}
 		}
 		catch(StorageException e){
@@ -66,6 +71,35 @@ class BRCacheReceiver {
 		
 	}
 
+	public boolean processReplaceResult() throws IOException, StorageException{
+		
+		/*
+		 * replaced | not_stored | <error>
+		 */
+		
+		try{
+			byte[] result = this.getLine();
+			
+			if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA,result)){
+				return false;
+			}
+			else
+			if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA,result)){
+				return true;
+			}
+			else{
+				throw new StorageException(new String(result));
+			}
+		}
+		catch(StorageException e){
+			throw e;
+		}
+		catch(Throwable e){
+			throw new StorageException(e);
+		}
+		
+	}
+	
 	public List<Object> processGetResult() throws IOException, RecoverException{
 		
 		List<Object> result = new ArrayList<Object>();

@@ -39,7 +39,11 @@ class BRCacheSender {
     
 	public void executePut(String key, long timeToLive, long timeToIdle, Object value) throws IOException {
 		
-		//put <key> <timeToLive> <timeToIdle> <size> <reserved>\r\n
+		/*
+			 put <key> <timeToLive> <timeToIdle> <size> <reserved>\r\n
+			 <data>\r\n
+			 end\r\n 
+		 */
 
 		byte[] data = this.toBytes(value);
 		
@@ -48,10 +52,7 @@ class BRCacheSender {
 		
 		out.write(key.getBytes(BrCacheConnectionImp.ENCODE));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
-		
-		out.write(BrCacheConnectionImp.DEFAULT_FLAGS_DTA);
-		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
-		
+
 		out.write(Long.toString(timeToLive).getBytes(BrCacheConnectionImp.ENCODE));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 
@@ -59,32 +60,127 @@ class BRCacheSender {
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 		
 		out.write(Integer.toString(data.length).getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
+		out.write(BrCacheConnectionImp.DEFAULT_FLAGS_DTA);
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		
 		out.write(data, 0, data.length);
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		
 		out.write(BrCacheConnectionImp.BOUNDARY_DTA);
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
 		out.flush();
 	}
 	
-	public void executeGet(String key, boolean forUpdate) throws IOException{
-		out.write(BrCacheConnectionImp.GET_COMMAND_DTA);
+	public void executeReplace(String key, long timeToLive, long timeToIdle, Object value) throws IOException {
+		
+		/*
+			 put <key> <timeToLive> <timeToIdle> <size> <reserved>\r\n
+			 <data>\r\n
+			 end\r\n 
+		 */
+
+		byte[] data = this.toBytes(value);
+		
+		out.write(BrCacheConnectionImp.REPLACE_COMMAND_DTA);
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
 		out.write(key.getBytes(BrCacheConnectionImp.ENCODE));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+
+		out.write(Long.toString(timeToLive).getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+
+		out.write(Long.toString(timeToIdle).getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
+		out.write(Integer.toString(data.length).getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
+		out.write(BrCacheConnectionImp.DEFAULT_FLAGS_DTA);
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
+		out.write(data, 0, data.length);
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
+		out.write(BrCacheConnectionImp.BOUNDARY_DTA);
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
+		out.flush();
+	}	
+	public void executeGet(String key, boolean forUpdate) throws IOException{
+		/*
+			get <key> <update> <reserved>\r\n
+		 */
+		
+		out.write(BrCacheConnectionImp.GET_COMMAND_DTA);
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
+		out.write(key.getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
 		out.write(forUpdate? '1' : '0');
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
-		out.write('0');
+		
+		out.write(BrCacheConnectionImp.DEFAULT_FLAGS_DTA);
 		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
 		out.flush();
 	}
 
 	public void executeRemove(String key) throws IOException{
+		
+		/*
+			delete <name> <reserved>\r\n
+		 */
+		
 		out.write(BrCacheConnectionImp.REMOVE_COMMAND_DTA);	
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
 		out.write(key.getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
+		out.write(BrCacheConnectionImp.DEFAULT_FLAGS_DTA);
 		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
+		out.flush();
+	}
+
+	public void executeBeginTransaction(String key) throws IOException{
+		
+		/*
+			begin\r\n
+		 */
+		
+		out.write(BrCacheConnectionImp.BEGIN_TX_COMMAND_DTA);	
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
+		out.flush();
+	}
+
+	public void executeCommitTransaction(String key) throws IOException{
+		
+		/*
+			commit\r\n
+		 */
+		
+		out.write(BrCacheConnectionImp.COMMIT_TX_COMMAND_DTA);	
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
+		out.flush();
+	}
+
+	public void executeRollbackTransaction(String key) throws IOException{
+		
+		/*
+			rollback\r\n
+		 */
+		
+		out.write(BrCacheConnectionImp.ROLLBACK_TX_COMMAND_DTA);	
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
 		out.flush();
 	}
 	

@@ -31,6 +31,7 @@ import org.junit.internal.Throwables;
  */
 public class BrCacheConnectionImp implements BrCacheConnection{
 
+	/*
     public static final String CRLF                      = "\r\n";
 
     public static final String DEFAULT_FLAGS             = "0";
@@ -56,7 +57,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     public static final String NOT_FOUND                 = "not_found";
     
     public static final String SEPARATOR_COMMAND         = " ";
-	
+	*/
 	
     public static final byte[] CRLF_DTA                  = "\r\n".getBytes();
 
@@ -66,12 +67,20 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     
     public static final byte[] PUT_COMMAND_DTA           = "put".getBytes();
 
-    public static final byte[] ERROR_DTA                 = "error".getBytes();
-    
+    public static final byte[] REPLACE_COMMAND_DTA       = "replace".getBytes();
+
     public static final byte[] GET_COMMAND_DTA           = "get".getBytes();
-    
+
     public static final byte[] REMOVE_COMMAND_DTA        = "remove".getBytes();
 
+    public static final byte[] BEGIN_TX_COMMAND_DTA      = "begin".getBytes();
+
+    public static final byte[] COMMIT_TX_COMMAND_DTA     = "commit".getBytes();
+
+    public static final byte[] ROLLBACK_TX_COMMAND_DTA   = "rollback".getBytes();
+    
+    public static final byte[] ERROR_DTA                 = "error".getBytes();
+    
     public static final byte[] VALUE_RESULT_DTA          = "value".getBytes();
     
     public static final byte[] SUCCESS_DTA               = "ok".getBytes();
@@ -79,6 +88,8 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     public static final byte[] PUT_SUCCESS_DTA           = "stored".getBytes();
     
     public static final byte[] REPLACE_SUCCESS_DTA       = "replaced".getBytes();
+
+    public static final byte[] NOT_STORED_SUCCESS_DTA    = "not_stored".getBytes();
     
     public static final byte[] NOT_FOUND_DTA             = "not_found".getBytes();
     
