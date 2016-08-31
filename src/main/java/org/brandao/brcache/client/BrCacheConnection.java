@@ -134,13 +134,13 @@ public interface BrCacheConnection extends Closeable{
 	 */
     boolean remove(String key) throws StorageException;
     
-    void setAutoCommit(boolean value);
+    void setAutoCommit(boolean value) throws TransactionException;
     
     boolean isAutoCommit();
     
-    void commit();
+    void commit() throws TransactionException;
     
-    void rollback();
+    void rollback() throws TransactionException;
     
     /**
      * Obtém o endereço do servidor.

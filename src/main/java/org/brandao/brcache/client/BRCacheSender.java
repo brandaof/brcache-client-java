@@ -149,7 +149,7 @@ class BRCacheSender {
 		out.flush();
 	}
 
-	public void executeBeginTransaction(String key) throws IOException{
+	public void executeBeginTransaction() throws IOException{
 		
 		/*
 			begin\r\n
@@ -161,7 +161,7 @@ class BRCacheSender {
 		out.flush();
 	}
 
-	public void executeCommitTransaction(String key) throws IOException{
+	public void executeCommitTransaction() throws IOException{
 		
 		/*
 			commit\r\n
@@ -173,7 +173,7 @@ class BRCacheSender {
 		out.flush();
 	}
 
-	public void executeRollbackTransaction(String key) throws IOException{
+	public void executeRollbackTransaction() throws IOException{
 		
 		/*
 			rollback\r\n

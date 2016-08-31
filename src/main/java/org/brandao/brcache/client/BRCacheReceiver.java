@@ -135,19 +135,19 @@ class BRCacheReceiver {
 		
 	}
 	
-	public void processBeginTransactionResult() throws IOException, StorageException{
-		this.processDefaultResult();
+	public void processBeginTransactionResult() throws IOException, TransactionException{
+		this.processDefaultTransactionCommandResult();
 	}
 
-	public void processCommitTransactionResult() throws IOException, StorageException{
-		this.processDefaultResult();
+	public void processCommitTransactionResult() throws IOException, TransactionException{
+		this.processDefaultTransactionCommandResult();
 	}
 
-	public void processRollbackTransactionResult() throws IOException, StorageException{
-		this.processDefaultResult();
+	public void processRollbackTransactionResult() throws IOException, TransactionException{
+		this.processDefaultTransactionCommandResult();
 	}
 	
-	public void processDefaultResult() throws IOException, StorageException{
+	public void processDefaultTransactionCommandResult() throws IOException, TransactionException{
 		
 		/*
 		 * ok | <error>
@@ -155,7 +155,7 @@ class BRCacheReceiver {
 		byte[] result = this.getLine();
 
 		if(!Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, result)){
-			throw new StorageException(new String(result));
+			throw new TransactionException(new String(result));
 		}
 		
 	}

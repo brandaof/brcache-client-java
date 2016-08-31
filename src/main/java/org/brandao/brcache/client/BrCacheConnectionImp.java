@@ -22,8 +22,6 @@ import java.net.Socket;
 import java.util.List;
 import java.util.zip.CRC32;
 
-import org.junit.internal.Throwables;
-
 /**
  * Permite o armazenamento, atualização, remoção de um item em um servidor BrCache.
  * 
@@ -81,8 +79,11 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 
     private BRCacheReceiver receiver;
     
+    private boolean autocommit;
+    
     public BrCacheConnectionImp(String host, int port){
         this(host, port, new DefaultStreamFactory());
+        this.autocommit = true;
     }
     
     /**
@@ -133,9 +134,10 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 			String key, Object oldValue, 
 			Object newValue, long timeToLive, long timeToIdle) throws StorageException{
 		
-		boolean localTransaction = this.startLocalTransaction();
+		Boolean localTransaction = null;
 		
 		try{
+			localTransaction = this.startLocalTransaction();
 			Object o = this.get(key, true);
 			boolean result;
 			if(o != null && o.equals(oldValue)){
@@ -170,9 +172,10 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 	public Object putIfAbsent(
 			String key, Object value, long timeToLive, long timeToIdle) throws StorageException{
 		
-		boolean localTransaction = this.startLocalTransaction();
+		Boolean localTransaction = null;
 		
 		try{
+			localTransaction = this.startLocalTransaction();
 			Object o = this.get(key, true);
 			if(o == null){
 				this.put(key, timeToLive, timeToIdle, value);
@@ -219,10 +222,6 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 
 	/* métodos de coleta*/
     
-    public Object get(String key) throws RecoverException{
-    	return this.get(key, false);
-    }
-    
     public Object get(String key, boolean forUpdate) throws RecoverException{
     	
     	try{
@@ -238,20 +237,20 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     	}
     	
     }
+    
+    public Object get(String key) throws RecoverException{
+    	return this.get(key, false);
+    }
 
     /* métodos de remoção */
 
 	public boolean remove(
 			String key, Object value) throws StorageException{
 		
-		boolean localTransaction = false;
-		
-		if(this.isAutoCommit()){
-			localTransaction = true;
-			this.setAutoCommit(false);
-		}
+		Boolean localTransaction = null;
 		
 		try{
+			localTransaction = this.startLocalTransaction();
 			Object o = this.get(key, true);
 			boolean result;
 			if(o != null && o.equals(value)){
@@ -260,22 +259,13 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 			else
 				result = false;
 			
-			if(localTransaction){
-				this.commit();
-			}
+			this.commitLocalTransaction(localTransaction);
 			return result;
 		}
-		catch(RecoverException e){
-			throw new StorageException(e.getMessage());
-		}
-		catch(StorageException e){
-			throw e;
-		}
 		catch(Throwable e){
+			
 			try{
-				if(localTransaction){
-					this.rollback();
-				}
+				this.rollbackLocalTransaction(localTransaction);
 			}
 			catch(Throwable ex){
 				throw new StorageException("rollback fail: " + ex.toString(), e);
@@ -307,6 +297,60 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     	
     }
     
+    public void setAutoCommit(boolean value) throws TransactionException{
+
+    	try{
+	    	if(value && !this.autocommit){
+	    		this.sender.executeCommitTransaction();
+	    		this.receiver.processCommitTransactionResult();
+	    	}
+	    	else
+	    	if(this.autocommit){
+	    		this.sender.executeBeginTransaction();
+	    		this.receiver.processBeginTransactionResult();
+	    	}
+	    	
+	    	this.autocommit = value;
+    	}
+    	catch(TransactionException e){
+    		throw e;
+    	}
+    	catch(Throwable e){
+    		throw new TransactionException(e);
+    	}
+    	
+    }
+    
+    public boolean isAutoCommit(){
+    	return this.autocommit;
+    }
+    
+    public void commit() throws TransactionException{
+    	try{
+    		this.sender.executeCommitTransaction();
+    		this.receiver.processCommitTransactionResult();
+    	}
+    	catch(TransactionException e){
+    		throw e;
+    	}
+    	catch(Throwable e){
+    		throw new TransactionException(e);
+    	}
+    }
+    
+    public void rollback() throws TransactionException{
+    	try{
+    		this.sender.executeCommitTransaction();
+    		this.receiver.processCommitTransactionResult();
+    	}
+    	catch(TransactionException e){
+    		throw e;
+    	}
+    	catch(Throwable e){
+    		throw new TransactionException(e);
+    	}
+    }
+    
     public String getHost() {
         return host;
     }
@@ -323,7 +367,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
         return streamFactory;
     }
     
-    private boolean startLocalTransaction(){
+    private boolean startLocalTransaction() throws TransactionException{
     	if(this.isAutoCommit()){
     		this.setAutoCommit(false);
     		return true;
@@ -332,14 +376,14 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     	return false;
     }
 
-    private void commitLocalTransaction(boolean local){
-    	if(local){
+    private void commitLocalTransaction(Boolean local) throws TransactionException{
+    	if(local != null && local){
     		this.commit();
     	}
     }
 
-    private void rollbackLocalTransaction(boolean local){
-    	if(local){
+    private void rollbackLocalTransaction(Boolean local) throws TransactionException{
+    	if(local != null && local){
     		this.rollback();
     	}
     }
