@@ -138,9 +138,17 @@
 		</dependency>
 		<dependency>
 			<groupId>org.brandao</groupId>
+			<artifactId>brcache-server</artifactId>
+			<version>1.0-b3</version>
+			<scope>test</scope>
+		</dependency>
+		<!--
+		<dependency>
+			<groupId>org.brandao</groupId>
 			<artifactId>brcache</artifactId>
 			<version>1.0-b3</version>
 		</dependency>
+		-->
 	</dependencies>
 
 </project>
