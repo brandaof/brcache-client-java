@@ -406,4 +406,15 @@ public class BrCacheConnectionImp implements BrCacheConnection{
         crc[7] = (byte)(crcValue >> 56 & 0xffL);
         return crc;
     }
+    
+    protected void finalize() throws Throwable{
+    	try{
+    		if(this.socket != null){
+    			this.socket.close();
+    		}
+    	}
+    	finally{
+    		super.finalize();
+    	}
+    }
 }

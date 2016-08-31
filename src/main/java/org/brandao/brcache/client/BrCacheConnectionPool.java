@@ -166,6 +166,9 @@ public class BrCacheConnectionPool {
     void release(BrCacheConnection con){
     	synchronized(this){
 	        try{
+	        	if(!con.isAutoCommit()){
+	        		con.rollback();
+	        	}
 	            this.instances.put(con);
 	        }
 	        catch(Throwable e){
