@@ -86,6 +86,7 @@ public interface BrCacheConnection extends Closeable{
 	 * @param value valor para ser associado à chave.
 	 * @param timeToLive é a quantidade máxima de tempo que um item expira após sua criação.
 	 * @param timeToIdle é a quantidade máxima de tempo que um item expira após o último acesso.
+     * @return <code>true</code> se o item for substituido. Caso contrário, <code>false</code>
      * @throws StorageException Lançada se ocorrer alguma falha ao tentar inserir o item.
 	 */
     boolean put(String key, long timeToLive, long timeToIdle, Object value) throws StorageException;

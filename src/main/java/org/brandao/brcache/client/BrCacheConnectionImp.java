@@ -30,34 +30,6 @@ import org.junit.internal.Throwables;
  * @author Brandao.
  */
 public class BrCacheConnectionImp implements BrCacheConnection{
-
-	/*
-    public static final String CRLF                      = "\r\n";
-
-    public static final String DEFAULT_FLAGS             = "0";
-    
-    public static final String BOUNDARY                  = "end";
-    
-    public static final String PUT_COMMAND               = "put";
-
-    public static final String ERROR                     = "error";
-    
-    public static final String GET_COMMAND               = "get";
-    
-    public static final String REMOVE_COMMAND            = "remove";
-
-    public static final String VALUE_RESULT              = "value";
-    
-    public static final String SUCCESS                   = "ok";
-
-    public static final String PUT_SUCCESS               = "stored";
-
-    public static final String REPLACE_SUCCESS           = "replaced";
-    
-    public static final String NOT_FOUND                 = "not_found";
-    
-    public static final String SEPARATOR_COMMAND         = " ";
-	*/
 	
     public static final byte[] CRLF_DTA                  = "\r\n".getBytes();
 
@@ -144,38 +116,41 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 	public boolean replace(
 			String key, Object value, long timeToLive, long timeToIdle) throws StorageException{
 		
-		boolean localTransaction = false;
-		
-		if(this.isAutoCommit()){
-			localTransaction = true;
-			this.setAutoCommit(false);
-		}
-		
 		try{
-			Object o = this.get(key, true);
-			boolean result;
-			if(o != null && o.equals(value)){
-				result = this.remove(key);
-			}
-			else
-				result = false;
-			
-			if(localTransaction){
-				this.commit();
-			}
-			return result;
-		}
-		catch(RecoverException e){
-			throw new StorageException(e.getMessage());
+			this.sender.executeReplace(key, timeToLive, timeToIdle, value);
+			return this.receiver.processReplaceResult();
 		}
 		catch(StorageException e){
 			throw e;
 		}
 		catch(Throwable e){
+			throw new StorageException(e);
+		}
+		
+	}
+    
+	public boolean replace(
+			String key, Object oldValue, 
+			Object newValue, long timeToLive, long timeToIdle) throws StorageException{
+		
+		boolean localTransaction = this.startLocalTransaction();
+		
+		try{
+			Object o = this.get(key, true);
+			boolean result;
+			if(o != null && o.equals(oldValue)){
+				result = this.put(key, timeToLive, timeToIdle, newValue);
+			}
+			else
+				result = false;
+			
+			this.commitLocalTransaction(localTransaction);
+			return result;
+		}
+		catch(Throwable e){
+			
 			try{
-				if(localTransaction){
-					this.rollback();
-				}
+				this.rollbackLocalTransaction(localTransaction);
 			}
 			catch(Throwable ex){
 				throw new StorageException("rollback fail: " + ex.toString(), e);
@@ -188,9 +163,44 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 				throw (StorageException)e;
 			else
 				throw new StorageException(e.getMessage());
-		}		
+		}
+		
 	}
-    
+	
+	public Object putIfAbsent(
+			String key, Object value, long timeToLive, long timeToIdle) throws StorageException{
+		
+		boolean localTransaction = this.startLocalTransaction();
+		
+		try{
+			Object o = this.get(key, true);
+			if(o == null){
+				this.put(key, timeToLive, timeToIdle, value);
+			}
+			
+			this.commitLocalTransaction(localTransaction);
+			return o;
+		}
+		catch(Throwable e){
+			
+			try{
+				this.rollbackLocalTransaction(localTransaction);
+			}
+			catch(Throwable ex){
+				throw new StorageException("rollback fail: " + ex.toString(), e);
+			}
+			
+			if(e instanceof RecoverException)
+				throw new StorageException(e.getMessage(), e);
+			else
+			if(e instanceof StorageException)
+				throw (StorageException)e;
+			else
+				throw new StorageException(e.getMessage());
+		}
+		
+	}
+	
     public boolean put(String key, long timeToLive, long timeToIdle, Object value) 
             throws StorageException {
 
@@ -311,6 +321,27 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 
     public StreamFactory getStreamFactory() {
         return streamFactory;
+    }
+    
+    private boolean startLocalTransaction(){
+    	if(this.isAutoCommit()){
+    		this.setAutoCommit(false);
+    		return true;
+    	}
+    	
+    	return false;
+    }
+
+    private void commitLocalTransaction(boolean local){
+    	if(local){
+    		this.commit();
+    	}
+    }
+
+    private void rollbackLocalTransaction(boolean local){
+    	if(local){
+    		this.rollback();
+    	}
     }
     
     @SuppressWarnings("unused")
