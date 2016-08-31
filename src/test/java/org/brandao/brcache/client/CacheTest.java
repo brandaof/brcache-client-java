@@ -3,6 +3,7 @@ package org.brandao.brcache.client;
 import java.awt.EventQueue;
 import java.io.IOException;
 
+import org.brandao.brcache.CacheTestHelper;
 import org.brandao.brcache.Configuration;
 import org.brandao.brcache.server.BrCacheServer;
 
@@ -53,156 +54,143 @@ public class CacheTest extends TestCase{
 	
 	/* replace */
 	
-	public void testReplace() throws StorageException, IOException{
+	public void testReplace() throws Throwable{
+		String prefixKEY = "testReplace:";
 		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
-		TestCase.assertFalse(con.replace(KEY, VALUE, 0, 0));
+		TestCase.assertFalse(con.replace(prefixKEY + KEY, VALUE, 0, 0));
 		con.close();
 	}
 
-	public void testReplaceSuccess() throws StorageException, RecoverException{
+	public void testReplaceSuccess() throws Throwable{
 		String prefixKEY = "testReplaceSuccess:";
 		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
 		
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
-		TestCase.assertEquals(VALUE, cache.get(KEY));
-		TestCase.assertTrue(cache.replace(KEY, VALUE2, 0, 0));
-		TestCase.assertEquals(VALUE2, (String)cache.get(KEY));
+		TestCase.assertEquals(VALUE, con.get(prefixKEY + KEY));
+		TestCase.assertTrue(con.replace(prefixKEY + KEY, VALUE2, 0, 0));
+		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
-	public void testReplaceStream() throws StorageException, IOException{
-		Cache cache = new Cache();
-		TestCase.assertFalse(cache.replaceStream(KEY, CacheTestHelper.toStream(VALUE), 0, 0));
+	public void testReplaceExact() throws Throwable{
+		String prefixKEY = "testReplaceSuccess:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		TestCase.assertFalse(con.replace(prefixKEY + KEY, VALUE, VALUE2, 0, 0));
 	}
 
-	public void testReplaceStreamSuccess() throws StorageException, RecoverException, IOException, ClassNotFoundException{
-		Cache cache = new Cache();
-		cache.putStream(KEY, CacheTestHelper.toStream(VALUE), 0, 0);
-		TestCase.assertEquals(VALUE, (String)CacheTestHelper.toObject(cache.getStream(KEY)));
-		TestCase.assertTrue(cache.replaceStream(KEY, CacheTestHelper.toStream(VALUE2), 0, 0));
-		TestCase.assertEquals(VALUE2, (String)CacheTestHelper.toObject(cache.getStream(KEY)));
-	}
-	
-	public void testReplaceExact() throws StorageException{
-		Cache cache = new Cache();
-		TestCase.assertFalse(cache.replace(KEY, VALUE, VALUE2, 0, 0));
-	}
-
-	public void testReplaceExactSuccess() throws StorageException, RecoverException{
-		Cache cache = new Cache();
-		cache.put(KEY, VALUE, 0, 0);
-		TestCase.assertEquals(VALUE, (String)cache.get(KEY));
-		TestCase.assertTrue(cache.replace(KEY, VALUE, VALUE2, 0, 0));
-		TestCase.assertEquals(VALUE2, (String)cache.get(KEY));
+	public void testReplaceExactSuccess() throws Throwable{
+		String prefixKEY = "testReplaceExactSuccess:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		con.put(prefixKEY + KEY, VALUE, 0, 0);
+		TestCase.assertEquals(VALUE, (String)con.get(prefixKEY + KEY));
+		TestCase.assertTrue(con.replace(prefixKEY + KEY, VALUE, VALUE2, 0, 0));
+		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
 	/* putIfAbsent */
 	
-	public void testputIfAbsent() throws StorageException, RecoverException{
-		Cache cache = new Cache();
-		TestCase.assertNull(cache.putIfAbsent(KEY, VALUE, 0, 0));
-		TestCase.assertEquals(VALUE, (String)cache.get(KEY));
+	public void testputIfAbsent() throws Throwable{
+		String prefixKEY = "testputIfAbsent:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		TestCase.assertNull(con.putIfAbsent(prefixKEY + KEY, VALUE, 0, 0));
+		TestCase.assertEquals(VALUE, con.get(prefixKEY + KEY));
 	}
 
-	public void testputIfAbsentExistValue() throws StorageException, RecoverException{
-		Cache cache = new Cache();
-		cache.put(KEY, VALUE, 0, 0);
-		TestCase.assertEquals(VALUE, cache.putIfAbsent(KEY, VALUE2, 0, 0));
-		TestCase.assertEquals(VALUE, (String)cache.get(KEY));
-	}
-
-	public void testputIfAbsentStream() throws StorageException, RecoverException, IOException{
-		Cache cache = new Cache();
-		TestCase.assertNull(cache.putIfAbsentStream(KEY, CacheTestHelper.toStream(VALUE), 0, 0));
-		TestCase.assertEquals(VALUE, (String)cache.get(KEY));
-	}
-
-	public void testputIfAbsentStreamExistValue() throws StorageException, RecoverException, IOException, ClassNotFoundException{
-		Cache cache = new Cache();
-		cache.putStream(KEY, CacheTestHelper.toStream(VALUE), 0, 0);
-		TestCase.assertEquals(VALUE, CacheTestHelper.toObject(cache.putIfAbsentStream(KEY, CacheTestHelper.toStream(VALUE2), 0, 0)));
-		TestCase.assertEquals(VALUE, CacheTestHelper.toObject(cache.getStream(KEY)));
+	public void testputIfAbsentExistValue() throws Throwable{
+		String prefixKEY = "testputIfAbsentExistValue:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		con.put(prefixKEY + KEY, VALUE, 0, 0);
+		TestCase.assertEquals(VALUE, con.putIfAbsent(prefixKEY + KEY, VALUE2, 0, 0));
+		TestCase.assertEquals(VALUE, con.get(prefixKEY + KEY));
 	}
 	
 	/* put */
 	
-	public void testPut() throws StorageException, RecoverException{
-		Cache cache = new Cache();
-		TestCase.assertNull((String)cache.get(KEY));
-		cache.put(KEY, VALUE, 0, 0);
-		TestCase.assertEquals(VALUE, (String)cache.get(KEY));
+	public void testPut() throws Throwable{
+		String prefixKEY = "testPut:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		TestCase.assertNull(con.get(prefixKEY + KEY));
+		con.put(prefixKEY + KEY, VALUE, 0, 0);
+		TestCase.assertEquals(VALUE, con.get(prefixKEY + KEY));
 	}
 
 	/* get */
 	
-	public void testGet() throws StorageException, RecoverException{
-		Cache cache = new Cache();
-		TestCase.assertNull((String)cache.get(KEY));
-		cache.put(KEY, VALUE, 0, 0);
-		TestCase.assertEquals(VALUE, (String)cache.get(KEY));
+	public void testGet() throws Throwable{
+		String prefixKEY = "testGet:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		TestCase.assertNull(con.get(prefixKEY + KEY));
+		con.put(prefixKEY + KEY, VALUE, 0, 0);
+		TestCase.assertEquals(VALUE, con.get(prefixKEY + KEY));
 	}
 
-	public void testGetOverride() throws StorageException, RecoverException{
-		Cache cache = new Cache();
-		TestCase.assertNull((String)cache.get(KEY));
-		cache.put(KEY, VALUE, 0, 0);
-		TestCase.assertEquals(VALUE, (String)cache.get(KEY));
-		cache.put(KEY, VALUE2, 0, 0);
-		TestCase.assertEquals(VALUE2, (String)cache.get(KEY));
+	public void testGetOverride() throws Throwable{
+		String prefixKEY = "testGetOverride:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		TestCase.assertNull(con.get(prefixKEY + KEY));
+		con.put(prefixKEY + KEY, VALUE, 0, 0);
+		TestCase.assertEquals(VALUE, con.get(prefixKEY + KEY));
+		con.put(prefixKEY + KEY, VALUE2, 0, 0);
+		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
 	/* remove */
 	
-	public void testRemoveExact() throws StorageException, RecoverException{
-		Cache cache = new Cache();
+	public void testRemoveExact() throws Throwable{
+		String prefixKEY = "testRemoveExact:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
 		
-		TestCase.assertNull((String)cache.get(KEY));
-		TestCase.assertFalse(cache.remove(KEY, VALUE));
+		TestCase.assertNull(con.get(prefixKEY + KEY));
+		TestCase.assertFalse(con.remove(prefixKEY + KEY, VALUE));
 		
-		cache.put(KEY, VALUE, 0, 0);
+		con.put(prefixKEY + KEY, VALUE, 0, 0);
 		
-		TestCase.assertEquals(VALUE, (String)cache.get(KEY));
+		TestCase.assertEquals(VALUE, con.get(prefixKEY + KEY));
 		
-		TestCase.assertFalse(cache.remove(KEY, VALUE2));
-		TestCase.assertTrue(cache.remove(KEY, VALUE));
+		TestCase.assertFalse(con.remove(prefixKEY + KEY, VALUE2));
+		TestCase.assertTrue(con.remove(prefixKEY + KEY, VALUE));
 	}
 
-	public void testRemove() throws StorageException, RecoverException{
-		Cache cache = new Cache();
+	public void testRemove() throws Throwable{
+		String prefixKEY = "testRemove:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
 		
-		TestCase.assertNull((String)cache.get(KEY));
-		TestCase.assertFalse(cache.remove(KEY));
+		TestCase.assertNull((String)con.get(prefixKEY + KEY));
+		TestCase.assertFalse(con.remove(prefixKEY + KEY));
 		
-		cache.put(KEY, VALUE, 0, 0);
+		con.put(prefixKEY + KEY, VALUE, 0, 0);
 		
-		TestCase.assertEquals(VALUE, (String)cache.get(KEY));
+		TestCase.assertEquals(VALUE, (String)con.get(prefixKEY + KEY));
 		
-		TestCase.assertTrue(cache.remove(KEY));
+		TestCase.assertTrue(con.remove(prefixKEY + KEY));
 	}
 
 	/* timeToLive */
 	
-	public void testTimeToLive() throws InterruptedException{
-		Cache cache = new Cache();
-		cache.put(KEY, VALUE, 1000, 0);
-		assertEquals(cache.get(KEY), VALUE);
+	public void testTimeToLive() throws Throwable{
+		String prefixKEY = "testTimeToLive:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		con.put(prefixKEY + KEY, VALUE, 1000, 0);
+		assertEquals(con.get(prefixKEY + KEY), VALUE);
 		Thread.sleep(800);
-		assertEquals(cache.get(KEY), VALUE);
+		assertEquals(con.get(prefixKEY + KEY), VALUE);
 		Thread.sleep(400);
-		assertNull(cache.get(KEY));
+		assertNull(con.get(prefixKEY + KEY));
 	}
 
-	public void testTimeToLiveLessThanTimeToIdle() throws InterruptedException{
-		Cache cache = new Cache();
-		cache.put(KEY, VALUE, 1000, 5000);
-		assertEquals(cache.get(KEY), VALUE);
+	public void testTimeToLiveLessThanTimeToIdle() throws Throwable{
+		String prefixKEY = "testTimeToLiveLessThanTimeToIdle:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		con.put(prefixKEY + KEY, VALUE, 1000, 5000);
+		assertEquals(con.get(prefixKEY + KEY), VALUE);
 		Thread.sleep(1200);
-		assertNull(cache.get(KEY));
+		assertNull(con.get(prefixKEY + KEY));
 	}
 
-	public void testNegativeTimeToLive() throws InterruptedException{
+	public void testNegativeTimeToLive() throws Throwable{
+		String prefixKEY = "testNegativeTimeToLive:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
 		try{
-			Cache cache = new Cache();
-			cache.put(KEY, VALUE, -1, 5000);
+			con.put(prefixKEY + KEY, VALUE, -1, 5000);
 			fail();
 		}
 		catch(StorageException e){
@@ -215,35 +203,38 @@ public class CacheTest extends TestCase{
 
 	/* TimeToIdle */
 	
-	public void testTimeToIdle() throws InterruptedException{
-		Cache cache = new Cache();
-		cache.put(KEY, VALUE, 0, 1000);
-		assertEquals(cache.get(KEY), VALUE);
+	public void testTimeToIdle() throws Throwable{
+		String prefixKEY = "testTimeToIdle:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		con.put(prefixKEY + KEY, VALUE, 0, 1000);
+		assertEquals(con.get(prefixKEY + KEY), VALUE);
 		Thread.sleep(800);
-		assertEquals(cache.get(KEY), VALUE);
+		assertEquals(con.get(prefixKEY + KEY), VALUE);
 		Thread.sleep(800);
-		assertEquals(cache.get(KEY), VALUE);
+		assertEquals(con.get(prefixKEY + KEY), VALUE);
 		Thread.sleep(1200);
-		assertNull(cache.get(KEY));
+		assertNull(con.get(prefixKEY + KEY));
 		
 	}
 
-	public void testTimeToIdleLessThanTimeToLive() throws InterruptedException{
-		Cache cache = new Cache();
-		cache.put(KEY, VALUE, 20000, 1000);
-		assertEquals(cache.get(KEY), VALUE);
+	public void testTimeToIdleLessThanTimeToLive() throws Throwable{
+		String prefixKEY = "testTimeToIdleLessThanTimeToLive:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
+		con.put(prefixKEY + KEY, VALUE, 20000, 1000);
+		assertEquals(con.get(prefixKEY + KEY), VALUE);
 		Thread.sleep(800);
-		assertEquals(cache.get(KEY), VALUE);
+		assertEquals(con.get(prefixKEY + KEY), VALUE);
 		Thread.sleep(800);
-		assertEquals(cache.get(KEY), VALUE);
+		assertEquals(con.get(prefixKEY + KEY), VALUE);
 		Thread.sleep(1200);
-		assertNull(cache.get(KEY));
+		assertNull(con.get(prefixKEY + KEY));
 	}
 
-	public void testNegativeTimeToIdle() throws InterruptedException{
+	public void testNegativeTimeToIdle() throws Throwable{
+		String prefixKEY = "testNegativeTimeToIdle:";
+		BrCacheConnection con = new BrCacheConnectionImp("localhost", 9090);
 		try{
-			Cache cache = new Cache();
-			cache.put(KEY, VALUE, 0, -1);
+			con.put(prefixKEY + KEY, VALUE, 0, -1);
 			fail();
 		}
 		catch(StorageException e){
