@@ -59,7 +59,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     
     public static final byte[] REPLACE_SUCCESS_DTA       = "replaced".getBytes();
 
-    public static final byte[] NOT_STORED_DTA            = "not_stored".getBytes();
+    public static final byte[] NOT_STORE_DTA             = "not_store".getBytes();
     
     public static final byte[] NOT_FOUND_DTA             = "not_found".getBytes();
     
@@ -226,8 +226,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     	
     	try{
 	    	this.sender.executeGet(key, forUpdate);
-	        List<Object> result = this.receiver.processGetResult();
-	        return result.isEmpty()? null : result.get(0);
+	        return this.receiver.processGetResult();
     	}
     	catch(RecoverException e){
     		throw e;

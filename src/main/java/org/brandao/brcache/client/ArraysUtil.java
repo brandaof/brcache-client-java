@@ -40,17 +40,16 @@ public class ArraysUtil {
 	 * @return fragmentos.
 	 */
 	public static byte[][] split(byte[] array, int index, byte value){
-		int start = 0;
+		int start = index;
 		int end   = 0;
 		List<byte[]> result = new ArrayList<byte[]>();
+		int limit = array.length -1;
 		
-		for(int i=0;i<array.length;i++){
+		for(int i=index;i<array.length;i++){
 			
 			if(array[i] == value){
 				end = i;
-				int len = end-start;
-				byte[] item = new byte[end-start];
-				System.arraycopy(array, start, item, 0, len);
+				byte[] item = copy(array, start, end);
 				result.add(item);
 				start = end + 1;
 				end = start;
@@ -58,7 +57,19 @@ public class ArraysUtil {
 			
 		}
 		
+		if(start == limit && array[limit] != 32){
+			byte[] item = copy(array, start, start + 1);
+			result.add(item);
+		}
+		
 		return result.toArray(new byte[0][]);
+	}
+	
+	private static byte[] copy(byte[] origin, int start, int end){
+		int len = end-start;
+		byte[] item = new byte[end-start];
+		System.arraycopy(origin, start, item, 0, len);
+		return item;
 	}
 	
 }

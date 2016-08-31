@@ -1,11 +1,13 @@
 package org.brandao.brcache.client;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 class BRCacheReceiver {
 
@@ -47,7 +49,7 @@ class BRCacheReceiver {
 		
 		byte[] result = this.getLine();
 		
-		if(Arrays.equals(BrCacheConnectionImp.NOT_STORED_DTA, result)){
+		if(Arrays.equals(BrCacheConnectionImp.NOT_STORE_DTA, result)){
 			return false;
 		}
 		else
@@ -60,19 +62,39 @@ class BRCacheReceiver {
 		
 	}
 	
-	public List<Object> processGetResult() throws IOException, RecoverException{
+	public Object processGetResult() throws IOException, RecoverException, ClassNotFoundException{
+		byte[] header = this.getLine();
 		
-		List<Object> result = new ArrayList<Object>();
-		Object o;
+		if(ArraysUtil.startsWith(header, BrCacheConnectionImp.VALUE_RESULT_DTA)){
+			CacheEntry e = this.getObject(header);
+			return e == null? null : this.toObject(e.getData());
+		}
+		else{
+			throw new RecoverException(new String(header));
+		}
+	}
+
+	public Map<String,Object> processGetsResult() throws IOException, RecoverException, ClassNotFoundException{
 		
-		while((o = this.getObject()) != null){
-			result.add(o);
+		Map<String,Object> result = new HashMap<String, Object>();
+		
+		byte[] header = this.getLine();
+		
+		while(ArraysUtil.startsWith(header, BrCacheConnectionImp.VALUE_RESULT_DTA)){
+			CacheEntry e = this.getObject(header);
+			if(e != null){
+				result.put(e.getKey(), this.toObject(e.getData()));
+			}
+		}
+		
+		if(!Arrays.equals(BrCacheConnectionImp.BOUNDARY_DTA, header)){
+			throw new RecoverException(new String(header));
 		}
 		
 		return result;
 	}
 	
-	private CacheEntry getObject() throws IOException, RecoverException{
+	private CacheEntry getObject(byte[] header) throws IOException, RecoverException{
 
 		/*
 		 * value <size> <flags>\r\n
@@ -80,38 +102,26 @@ class BRCacheReceiver {
 		 * end\r\n
 		 */
 		
-		byte[] header = this.getLine();
-
-		if(ArraysUtil.startsWith(header, BrCacheConnectionImp.VALUE_RESULT_DTA)){
-			
-			byte[][] dataParams = ArraysUtil.split(
-					header, 
-					BrCacheConnectionImp.VALUE_RESULT_DTA.length + 1, 
-					(byte)32);
-			
-			String key       = new String(dataParams[0]);
-			int size         = Integer.parseInt(new String(dataParams[1]));
-			int flags        = Integer.parseInt(new String(dataParams[2]));
-			byte[] dta       = new byte[size];
-			
-			this.in.read(dta, 0, dta.length);
-			
-			byte[] endData = new byte[2];
-			this.in.read(endData, 0, endData.length);
-			
-			if(!Arrays.equals(BrCacheConnectionImp.CRLF_DTA, endData)){
-				throw new IOException("corrupted data: " + key);
-			}
-			
-			return new CacheEntry(key, size, flags, dta);
+		byte[][] dataParams = ArraysUtil.split(
+				header, 
+				BrCacheConnectionImp.VALUE_RESULT_DTA.length + 1, 
+				(byte)32);
+		
+		String key       = new String(dataParams[0]);
+		int size         = Integer.parseInt(new String(dataParams[1]));
+		int flags        = Integer.parseInt(new String(dataParams[2]));
+		
+		byte[] dta = new byte[size];
+		this.in.read(dta, 0, dta.length);
+		
+		byte[] endData = new byte[2];
+		this.in.read(endData, 0, endData.length);
+		
+		if(!Arrays.equals(BrCacheConnectionImp.CRLF_DTA, endData)){
+			throw new IOException("corrupted data: " + key);
 		}
-		else
-		if(Arrays.equals(BrCacheConnectionImp.BOUNDARY_DTA, header)){
-			return null;
-		}
-		else{
-			throw new RecoverException(new String(header));
-		}
+		
+		return size == 0? null : new CacheEntry(key, size, flags, dta);
 		
 	}
 
@@ -160,6 +170,12 @@ class BRCacheReceiver {
 		
 	}
 
+	private Object toObject(byte[] data) throws ClassNotFoundException, IOException{
+		ByteArrayInputStream in = new ByteArrayInputStream(data);
+		ObjectInputStream bin = new ObjectInputStream(in);
+		return bin.readObject();
+	}
+	
 	private byte[] getLine() throws IOException{
 		
 		int c;
@@ -173,7 +189,7 @@ class BRCacheReceiver {
 	
 		if(c == '\n'){
 			this.in.reset();
-			byte[] buf = new byte[i];
+			byte[] buf = new byte[i + 1];
 			this.in.read(buf, 0, buf.length);
 			//return new String(buf, 0, buf.length - 2);
 			return Arrays.copyOf(buf, buf.length - 2);
