@@ -17,30 +17,6 @@ class BRCacheReceiver {
     			new BufferedInputStream(
     					streamFactory.createInpuStream(socket), bufferLength);
 	}
-	
-	private byte[] getLine() throws IOException{
-		
-		int c;
-		int i = 0;
-		
-		this.in.mark(256);
-		
-		while((c = this.in.read()) != -1 && c != '\n'){
-			i++;
-		}
-	
-		if(c == '\n'){
-			this.in.reset();
-			byte[] buf = new byte[i];
-			this.in.read(buf, 0, buf.length);
-			//return new String(buf, 0, buf.length - 2);
-			return Arrays.copyOf(buf, buf.length - 2);
-		}
-		else{
-			throw new IOException("premature end of data");
-		}
-		
-	}
 
 	public boolean processPutResult() throws IOException, StorageException{
 		
@@ -48,25 +24,17 @@ class BRCacheReceiver {
 		 * stored | replaced | <error>
 		 */
 		
-		try{
-			byte[] result = this.getLine();
-			
-			if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA, result)){
-				return false;
-			}
-			else
-			if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA, result)){
-				return true;
-			}
-			else{
-				throw new StorageException(new String(result));
-			}
+		byte[] result = this.getLine();
+		
+		if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA, result)){
+			return false;
 		}
-		catch(StorageException e){
-			throw e;
+		else
+		if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA, result)){
+			return true;
 		}
-		catch(Throwable e){
-			throw new StorageException(e);
+		else{
+			throw new StorageException(new String(result));
 		}
 		
 	}
@@ -77,25 +45,17 @@ class BRCacheReceiver {
 		 * replaced | not_stored | <error>
 		 */
 		
-		try{
-			byte[] result = this.getLine();
-			
-			if(Arrays.equals(BrCacheConnectionImp.NOT_STORED_DTA, result)){
-				return false;
-			}
-			else
-			if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA, result)){
-				return true;
-			}
-			else{
-				throw new StorageException(new String(result));
-			}
+		byte[] result = this.getLine();
+		
+		if(Arrays.equals(BrCacheConnectionImp.NOT_STORED_DTA, result)){
+			return false;
 		}
-		catch(StorageException e){
-			throw e;
+		else
+		if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA, result)){
+			return true;
 		}
-		catch(Throwable e){
-			throw new StorageException(e);
+		else{
+			throw new StorageException(new String(result));
 		}
 		
 	}
@@ -157,22 +117,69 @@ class BRCacheReceiver {
 
 	public boolean processRemoveResult() throws IOException, StorageException{
 		
-		try{
-			String result = this.getLine();
+		/*
+		 * ok | not_found | <error>
+		 */
+		byte[] result = this.getLine();
 
-			if(BrCacheConnectionImp.SUCCESS.equals(result)){
-				return true;
-			}
-			else
-			if(BrCacheConnectionImp.NOT_FOUND.equals(result)){
-				return false;
-			}
-			else{
-				throw new StorageException(result);
-			}
+		if(Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, result)){
+			return true;
 		}
-		catch(StorageException e){
-			throw e;
+		else
+		if(Arrays.equals(BrCacheConnectionImp.NOT_FOUND_DTA, result)){
+			return false;
+		}
+		else{
+			throw new StorageException(new String(result));
+		}
+		
+	}
+	
+	public void processBeginTransactionResult() throws IOException, StorageException{
+		this.processDefaultResult();
+	}
+
+	public void processCommitTransactionResult() throws IOException, StorageException{
+		this.processDefaultResult();
+	}
+
+	public void processRollbackTransactionResult() throws IOException, StorageException{
+		this.processDefaultResult();
+	}
+	
+	public void processDefaultResult() throws IOException, StorageException{
+		
+		/*
+		 * ok | <error>
+		 */
+		byte[] result = this.getLine();
+
+		if(!Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, result)){
+			throw new StorageException(new String(result));
+		}
+		
+	}
+
+	private byte[] getLine() throws IOException{
+		
+		int c;
+		int i = 0;
+		
+		this.in.mark(256);
+		
+		while((c = this.in.read()) != -1 && c != '\n'){
+			i++;
+		}
+	
+		if(c == '\n'){
+			this.in.reset();
+			byte[] buf = new byte[i];
+			this.in.read(buf, 0, buf.length);
+			//return new String(buf, 0, buf.length - 2);
+			return Arrays.copyOf(buf, buf.length - 2);
+		}
+		else{
+			throw new IOException("premature end of data");
 		}
 		
 	}
