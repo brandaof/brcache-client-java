@@ -1,5 +1,8 @@
 package org.brandao.brcache.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Provê métodos auxiliares de manipulação de arranjo de bytes.
  * @author Brandao
@@ -27,6 +30,35 @@ public class ArraysUtil {
 		}
 		
 		return true;
+	}
+
+	/**
+	 * Fragmento um arranjo usando um byte como delimitador.
+	 * @param array arranjo
+	 * @param value delimitador.
+	 * @param index índice inicial.
+	 * @return fragmentos.
+	 */
+	public static byte[][] split(byte[] array, int index, byte value){
+		int start = 0;
+		int end   = 0;
+		List<byte[]> result = new ArrayList<byte[]>();
+		
+		for(int i=0;i<array.length;i++){
+			
+			if(array[i] == value){
+				end = i;
+				int len = end-start;
+				byte[] item = new byte[end-start];
+				System.arraycopy(array, start, item, 0, len);
+				result.add(item);
+				start = end + 1;
+				end = start;
+			}
+			
+		}
+		
+		return result.toArray(new byte[0][]);
 	}
 	
 }

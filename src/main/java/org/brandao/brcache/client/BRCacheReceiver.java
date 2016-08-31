@@ -119,20 +119,19 @@ class BRCacheReceiver {
 		 * <data>\r\n
 		 * end\r\n
 		 */
+		
 		byte[] header = this.getLine();
 
 		if(ArraysUtil.startsWith(header, BrCacheConnectionImp.VALUE_RESULT_DTA)){
 			
-			String paramsSTR = 
-				new String(
-						header, 
-						BrCacheConnectionImp.VALUE_RESULT_DTA.length + 1, 
-						header.length);
-
-			String[] params  = paramsSTR.split(" ");
-			String key       = params[0];
-			int size         = Integer.parseInt(params[1]);
-			int flags        = Integer.parseInt(params[2]);
+			byte[][] dataParams = ArraysUtil.split(
+					header, 
+					BrCacheConnectionImp.VALUE_RESULT_DTA.length + 1, 
+					(byte)32);
+			
+			String key       = new String(dataParams[0]);
+			int size         = Integer.parseInt(new String(dataParams[1]));
+			int flags        = Integer.parseInt(new String(dataParams[2]));
 			byte[] dta       = new byte[size];
 			
 			this.in.read(dta, 0, dta.length);
@@ -147,11 +146,11 @@ class BRCacheReceiver {
 			return new CacheEntry(key, size, flags, dta);
 		}
 		else
-		if(header.equals(BrCacheConnectionImp.BOUNDARY)){
+		if(Arrays.equals(BrCacheConnectionImp.BOUNDARY_DTA, header)){
 			return null;
 		}
 		else{
-			throw new RecoverException(header);
+			throw new RecoverException(new String(header));
 		}
 		
 	}
