@@ -141,7 +141,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 			Object o = this.get(key, true);
 			boolean result;
 			if(o != null && o.equals(oldValue)){
-				result = this.put(key, timeToLive, timeToIdle, newValue);
+				result = this.put(key, newValue, timeToLive, timeToIdle);
 			}
 			else
 				result = false;
@@ -178,7 +178,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 			localTransaction = this.startLocalTransaction();
 			Object o = this.get(key, true);
 			if(o == null){
-				this.put(key, timeToLive, timeToIdle, value);
+				this.put(key, value, timeToLive, timeToIdle);
 			}
 			
 			this.commitLocalTransaction(localTransaction);
@@ -204,7 +204,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 		
 	}
 	
-    public boolean put(String key, long timeToLive, long timeToIdle, Object value) 
+    public boolean put(String key, Object value, long timeToLive, long timeToIdle) 
             throws StorageException {
 
     	try{

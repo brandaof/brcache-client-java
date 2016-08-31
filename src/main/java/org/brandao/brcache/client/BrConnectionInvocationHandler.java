@@ -57,6 +57,12 @@ class BrConnectionInvocationHandler implements InvocationHandler{
         if(!name.equals(CLOSE_METHOD))
             return method.invoke(connection, args);
         else
+        if(name.equals(CLOSE_METHOD)){
+        	this.pool.release(this.connection);
+        	this.connection = null;
+        	return null;
+        }
+        else
             return null;
     }
     

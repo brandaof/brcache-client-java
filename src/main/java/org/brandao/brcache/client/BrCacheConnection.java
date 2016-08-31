@@ -89,7 +89,7 @@ public interface BrCacheConnection extends Closeable{
      * @return <code>true</code> se o item for substituido. Caso contrário, <code>false</code>
      * @throws StorageException Lançada se ocorrer alguma falha ao tentar inserir o item.
 	 */
-    boolean put(String key, long timeToLive, long timeToIdle, Object value) throws StorageException;
+    boolean put(String key, Object value, long timeToLive, long timeToIdle) throws StorageException;
     
 	/**
      * Obtém o valor associado à chave bloqueando ou não 
