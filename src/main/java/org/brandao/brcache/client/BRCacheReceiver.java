@@ -115,20 +115,26 @@ class BRCacheReceiver {
 	private CacheEntry getObject() throws IOException, RecoverException{
 
 		/*
+		 * value <size> <flags>\r\n
 		 * <data>\r\n
 		 * end\r\n
 		 */
-		String header = this.getLine();
+		byte[] header = this.getLine();
 
-		if(header.startsWith(BrCacheConnectionImp.VALUE_RESULT)){
+		if(ArraysUtil.startsWith(header, BrCacheConnectionImp.VALUE_RESULT_DTA)){
 			
-			String paramsSTR = header.substring(BrCacheConnectionImp.VALUE_RESULT.length());
+			String paramsSTR = 
+				new String(
+						header, 
+						BrCacheConnectionImp.VALUE_RESULT_DTA.length + 1, 
+						header.length);
+
 			String[] params  = paramsSTR.split(" ");
-			String key = params[0];
+			String key       = params[0];
+			int size         = Integer.parseInt(params[1]);
+			int flags        = Integer.parseInt(params[2]);
+			byte[] dta       = new byte[size];
 			
-			int size   = Integer.parseInt(params[1]);
-			int flags  = Integer.parseInt(params[2]);
-			byte[] dta = new byte[size];
 			this.in.read(dta, 0, dta.length);
 			
 			byte[] endData = new byte[2];
