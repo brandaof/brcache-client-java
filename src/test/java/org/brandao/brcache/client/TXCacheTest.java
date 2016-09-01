@@ -810,7 +810,7 @@ public class TXCacheTest extends TestCase{
 			con.put(prefixKEY + KEY, VALUE, -1, 5000);
 			fail();
 		}
-		catch(StorageException e){
+		catch(CacheException e){
 			if(e.getCode() != 1003 || !e.getMessage().equals("timeToLive is invalid!")){
 				fail();
 			}
@@ -860,7 +860,7 @@ public class TXCacheTest extends TestCase{
 			con.put(prefixKEY + KEY, VALUE, 0, -1);
 			fail();
 		}
-		catch(StorageException e){
+		catch(CacheException e){
 			if(e.getCode() != 1003 || !e.getMessage().equals("timeToIdle is invalid!")){
 				fail();
 			}
