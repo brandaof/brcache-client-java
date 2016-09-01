@@ -80,6 +80,8 @@ class BrCacheConnectionImp implements BrCacheConnection{
     
     private boolean autocommit;
     
+    private boolean closed;
+    
     public BrCacheConnectionImp(String host, int port){
         this(host, port, new DefaultStreamFactory());
     }
@@ -100,15 +102,21 @@ class BrCacheConnectionImp implements BrCacheConnection{
         this.sender     = new BRCacheSender(socket, streamFactory, 8*1024);
         this.receiver   = new BRCacheReceiver(socket, streamFactory, 8*1024);
         this.autocommit = true;
+        this.closed     = false;
     }
     
-    public void disconect() throws IOException{
+    public void close() throws IOException{
         
-        if(this.socket != null)
-            this.socket.close();
-        
-        this.sender   = null;
-        this.receiver = null;
+    	try{
+	        if(this.socket != null){
+	            this.socket.close();
+	        }
+    	}
+    	finally{
+	        this.closed   = true;
+	        this.sender   = null;
+	        this.receiver = null;
+    	}
     }
     
 	/* métodos de armazenamento */
@@ -380,10 +388,6 @@ class BrCacheConnectionImp implements BrCacheConnection{
         return port;
     }
 
-    public void close() throws IOException {
-        this.socket.close();
-    }
-
     public StreamFactory getStreamFactory() {
         return streamFactory;
     }
@@ -430,9 +434,7 @@ class BrCacheConnectionImp implements BrCacheConnection{
     
     protected void finalize() throws Throwable{
     	try{
-    		if(this.socket != null){
-    			this.socket.close();
-    		}
+    		this.close();
     	}
     	finally{
     		super.finalize();
