@@ -40,6 +40,12 @@ public interface BrCacheConnection {
      */
     void close() throws CacheException;
     
+    /**
+     * Verifica se a conexão foi fechada.
+     * @return <code>true</code> se a conexão está fechada. Caso contrátio, <code>false</code>.
+     */
+    boolean isClosed();
+    
 	/* métodos de coleta*/
     
     /**

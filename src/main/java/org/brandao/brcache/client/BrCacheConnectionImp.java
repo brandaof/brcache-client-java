@@ -17,7 +17,6 @@
 
 package org.brandao.brcache.client;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.util.zip.CRC32;
 
@@ -125,6 +124,10 @@ class BrCacheConnectionImp implements BrCacheConnection{
 	        this.sender   = null;
 	        this.receiver = null;
     	}
+    }
+    
+    public boolean isClosed(){
+    	return this.closed;
     }
     
 	/* métodos de armazenamento */

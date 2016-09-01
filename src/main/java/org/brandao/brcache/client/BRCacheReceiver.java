@@ -20,7 +20,7 @@ class BRCacheReceiver {
     					streamFactory.createInpuStream(socket), bufferLength);
 	}
 
-	public boolean processPutResult() throws IOException, StorageException{
+	public boolean processPutResult() throws IOException, CacheException{
 		
 		/*
 		 * stored | replaced | <error>
@@ -37,12 +37,12 @@ class BRCacheReceiver {
 		}
 		else{
 			Error err = this.parseError(result);
-			throw new StorageException(err.code, err.message);
+			throw new CacheException(err.code, err.message);
 		}
 		
 	}
 
-	public boolean processReplaceResult() throws IOException, StorageException{
+	public boolean processReplaceResult() throws IOException, CacheException{
 		
 		/*
 		 * replaced | not_stored | <error>
@@ -59,12 +59,12 @@ class BRCacheReceiver {
 		}
 		else{
 			Error err = this.parseError(result);
-			throw new StorageException(err.code, err.message);
+			throw new CacheException(err.code, err.message);
 		}
 		
 	}
 	
-	public Object processGetResult() throws IOException, RecoverException, ClassNotFoundException{
+	public Object processGetResult() throws IOException, CacheException, ClassNotFoundException{
 		byte[] header = this.getLine();
 		
 		if(ArraysUtil.startsWith(header, BrCacheConnectionImp.VALUE_RESULT_DTA)){
@@ -80,11 +80,11 @@ class BRCacheReceiver {
 		}
 		else{
 			Error err = this.parseError(header);
-			throw new RecoverException(err.code, err.message);
+			throw new CacheException(err.code, err.message);
 		}
 	}
 
-	public Map<String,Object> processGetsResult() throws IOException, RecoverException, ClassNotFoundException{
+	public Map<String,Object> processGetsResult() throws IOException, CacheException, ClassNotFoundException{
 		
 		Map<String,Object> result = new HashMap<String, Object>();
 		
@@ -99,13 +99,13 @@ class BRCacheReceiver {
 		
 		if(!Arrays.equals(BrCacheConnectionImp.BOUNDARY_DTA, header)){
 			Error err = this.parseError(header);
-			throw new RecoverException(err.code, err.message);
+			throw new CacheException(err.code, err.message);
 		}
 		
 		return result;
 	}
 	
-	private CacheEntry getObject(byte[] header) throws IOException, RecoverException{
+	private CacheEntry getObject(byte[] header) throws IOException, CacheException{
 
 		/*
 		 * value <size> <flags>\r\n
@@ -141,7 +141,7 @@ class BRCacheReceiver {
 		
 	}
 
-	public boolean processRemoveResult() throws IOException, StorageException{
+	public boolean processRemoveResult() throws IOException, CacheException{
 		
 		/*
 		 * ok | not_found | <error>
@@ -157,24 +157,24 @@ class BRCacheReceiver {
 		}
 		else{
 			Error err = this.parseError(result);
-			throw new StorageException(err.code, err.message);
+			throw new CacheException(err.code, err.message);
 		}
 		
 	}
 	
-	public void processBeginTransactionResult() throws IOException, TransactionException{
+	public void processBeginTransactionResult() throws IOException, CacheException{
 		this.processDefaultTransactionCommandResult();
 	}
 
-	public void processCommitTransactionResult() throws IOException, TransactionException{
+	public void processCommitTransactionResult() throws IOException, CacheException{
 		this.processDefaultTransactionCommandResult();
 	}
 
-	public void processRollbackTransactionResult() throws IOException, TransactionException{
+	public void processRollbackTransactionResult() throws IOException, CacheException{
 		this.processDefaultTransactionCommandResult();
 	}
 	
-	public void processDefaultTransactionCommandResult() throws IOException, TransactionException{
+	public void processDefaultTransactionCommandResult() throws IOException, CacheException{
 		
 		/*
 		 * ok | <error>
@@ -183,7 +183,7 @@ class BRCacheReceiver {
 
 		if(!Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, result)){
 			Error err = this.parseError(result);
-			throw new TransactionException(err.code, err.message);
+			throw new CacheException(err.code, err.message);
 		}
 		
 	}
