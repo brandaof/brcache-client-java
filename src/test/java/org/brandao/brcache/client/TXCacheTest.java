@@ -385,7 +385,7 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
 			protected void execute(String key, Object value,
@@ -416,7 +416,7 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
 			protected void execute(String key, Object value,
