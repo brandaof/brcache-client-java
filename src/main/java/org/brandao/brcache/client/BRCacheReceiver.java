@@ -71,8 +71,9 @@ class BRCacheReceiver {
 			CacheEntry e = this.getObject(header);
 			
 			byte[] boundary = this.getLine();
+			
 			if(!Arrays.equals(BrCacheConnectionImp.BOUNDARY_DTA, boundary)){
-				throw new RecoverException(1021, "Get item error: expected end");
+				throw new IOException("expected end");
 			}
 			
 			return e == null? null : this.toObject(e.getData());

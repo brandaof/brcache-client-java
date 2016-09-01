@@ -120,8 +120,10 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 			this.sender.executeReplace(key, timeToLive, timeToIdle, value);
 			return this.receiver.processReplaceResult();
 		}
-		catch(StorageException e){
-			throw e;
+		catch(CacheException e){
+			throw e instanceof StorageException?
+					(StorageException)e :
+					new StorageException(e.getCode(), e.getMessage(), e);
 		}
 		catch(Throwable e){
     		throw new StorageException(0, "client error: unknow error", e);
@@ -160,13 +162,12 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 				throw new StorageException(0, "rollback fail: " + ex.toString(), e);
 			}
 			
-			if(e instanceof RecoverException){
-				RecoverException r = (RecoverException)e;
-				throw new StorageException(r.getCode(), r.getMessage(), r);
+			if(e instanceof CacheException){
+				CacheException c = (CacheException)e;
+				throw e instanceof StorageException?
+						(StorageException)e :
+						new StorageException(c.getCode(), c.getMessage(), e);
 			}
-			else
-			if(e instanceof StorageException)
-				throw (StorageException)e;
 			else{
 	    		throw new StorageException(0, "client error: unknow error", e);
 			}
@@ -201,13 +202,12 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 				throw new StorageException(0, "rollback fail: " + ex.toString(), e);
 			}
 			
-			if(e instanceof RecoverException){
-				RecoverException r = (RecoverException)e;
-				throw new StorageException(r.getCode(), r.getMessage(), r);
+			if(e instanceof CacheException){
+				CacheException c = (CacheException)e;
+				throw e instanceof StorageException?
+						(StorageException)e :
+						new StorageException(c.getCode(), c.getMessage(), e);
 			}
-			else
-			if(e instanceof StorageException)
-				throw (StorageException)e;
 			else{
 	    		throw new StorageException(0, "client error: unknow error", e);
 			}
@@ -222,9 +222,11 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 	    	this.sender.executePut(key, timeToLive, timeToIdle, value);
 	        return this.receiver.processPutResult();
     	}
-    	catch(StorageException e){
-    		throw e;
-    	}
+		catch(CacheException e){
+			throw e instanceof StorageException?
+					(StorageException)e :
+					new StorageException(e.getCode(), e.getMessage(), e);
+		}
     	catch(Throwable e){
     		throw new StorageException(0, "client error: unknow error", e);
     	}
@@ -239,9 +241,11 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 	    	this.sender.executeGet(key, forUpdate);
 	        return this.receiver.processGetResult();
     	}
-    	catch(RecoverException e){
-    		throw e;
-    	}
+		catch(CacheException e){
+			throw e instanceof RecoverException?
+					(RecoverException)e :
+					new RecoverException(e.getCode(), e.getMessage(), e);
+		}
     	catch(Throwable e){
     		throw new RecoverException(0, "client error: unknow error", e);
     	}
@@ -284,13 +288,12 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 				throw new StorageException(0, "rollback fail: " + ex.toString(), e);
 			}
 			
-			if(e instanceof RecoverException){
-				RecoverException r = (RecoverException)e;
-				throw new StorageException(r.getCode(), r.getMessage(), r);
+			if(e instanceof CacheException){
+				CacheException c = (CacheException)e;
+				throw e instanceof StorageException?
+						(StorageException)e :
+						new StorageException(c.getCode(), c.getMessage(), e);
 			}
-			else
-			if(e instanceof StorageException)
-				throw (StorageException)e;
 			else{
 	    		throw new StorageException(0, "client error: unknow error", e);
 			}
@@ -304,9 +307,11 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 	    	this.sender.executeRemove(key);
 	        return this.receiver.processRemoveResult();
     	}
-    	catch(StorageException e){
-    		throw e;
-    	}
+		catch(CacheException e){
+			throw e instanceof StorageException?
+					(StorageException)e :
+					new StorageException(e.getCode(), e.getMessage(), e);
+		}
     	catch(Throwable e){
     		throw new StorageException(0, "client error: unknow error", e);
     	}
