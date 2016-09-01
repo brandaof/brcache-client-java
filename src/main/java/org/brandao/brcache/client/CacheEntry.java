@@ -1,6 +1,6 @@
 package org.brandao.brcache.client;
 
-public class CacheEntry {
+class CacheEntry {
 
 	private String key;
 	

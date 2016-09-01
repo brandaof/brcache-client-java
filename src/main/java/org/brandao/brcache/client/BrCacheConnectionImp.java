@@ -26,7 +26,7 @@ import java.util.zip.CRC32;
  * 
  * @author Brandao.
  */
-public class BrCacheConnectionImp implements BrCacheConnection{
+class BrCacheConnectionImp implements BrCacheConnection{
 	
     public static final byte[] CRLF_DTA                  = "\r\n".getBytes();
 

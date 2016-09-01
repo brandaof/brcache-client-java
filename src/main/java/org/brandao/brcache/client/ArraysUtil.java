@@ -8,7 +8,7 @@ import java.util.List;
  * @author Brandao
  *
  */
-public class ArraysUtil {
+class ArraysUtil {
 
 	/**
 	 * Verifica se um arranjo de bytes inicia com os mesmos bytes de outro arranjo de bytes.
