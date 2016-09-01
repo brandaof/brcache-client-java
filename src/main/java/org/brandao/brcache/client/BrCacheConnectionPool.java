@@ -173,14 +173,8 @@ public class BrCacheConnectionPool {
 	            this.instances.put(con);
 	        }
 	        catch(Throwable e){
-	        	try{
-	        		con.close();
-	        	}
-	        	catch(Throwable ex){
-	        		ex.printStackTrace();
-	        	}
-	        	
-	            this.createdInstances--;
+	        	e.printStackTrace();
+	        	this.shutdown(con);
 	        }
     	}
     }
@@ -198,9 +192,11 @@ public class BrCacheConnectionPool {
         		ex.printStackTrace();
         	}
     		
-	        this.createdInstances--;
-	        this.instances.remove(con);
+	        if(this.instances.remove(con)){
+	        	this.createdInstances--;
+	        }
     	}
+    	
     }
 
     /**
