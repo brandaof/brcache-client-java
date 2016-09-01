@@ -22,22 +22,25 @@ package org.brandao.brcache.client;
  * 
  * @author Brandao
  */
-public class CacheException  extends Exception{
+public class CacheException extends Exception{
     
 	private static final long serialVersionUID = -2125449136205991256L;
 
 	private int code;
 
-    public CacheException(int code, String string) {
-        super(string);
-        this.code = code;
-    }
-	
     public CacheException(int code, String string, Throwable thrwbl) {
         super(string, thrwbl);
         this.code = code;
     }
 
+    public CacheException(int code, String string) {
+    	this(code, string, null);
+    }
+	
+    public CacheException(Throwable thrwbl) {
+        this(2000, "client error", thrwbl);
+    }
+    
     public int getCode() {
 		return code;
 	}

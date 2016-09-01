@@ -97,20 +97,28 @@ class BrCacheConnectionImp implements BrCacheConnection{
         this.streamFactory 	= streamFactory;
     }
     
-    public void connect() throws IOException{
-        this.socket     = new Socket(this.getHost(), this.getPort());
-        this.sender     = new BRCacheSender(socket, streamFactory, 8*1024);
-        this.receiver   = new BRCacheReceiver(socket, streamFactory, 8*1024);
-        this.autocommit = true;
-        this.closed     = false;
+    public void connect() throws CacheException{
+    	try{
+	        this.socket     = new Socket(this.getHost(), this.getPort());
+	        this.sender     = new BRCacheSender(socket, streamFactory, 8*1024);
+	        this.receiver   = new BRCacheReceiver(socket, streamFactory, 8*1024);
+	        this.autocommit = true;
+	        this.closed     = false;
+    	}
+    	catch(Throwable e){
+    		throw new CacheException(e);
+    	}
     }
     
-    public void close() throws IOException{
+    public void close() throws CacheException{
         
     	try{
 	        if(this.socket != null){
 	            this.socket.close();
 	        }
+    	}
+    	catch(Throwable e){
+    		throw new CacheException(e);
     	}
     	finally{
 	        this.closed   = true;
@@ -122,26 +130,24 @@ class BrCacheConnectionImp implements BrCacheConnection{
 	/* métodos de armazenamento */
 
 	public boolean replace(
-			String key, Object value, long timeToLive, long timeToIdle) throws StorageException{
+			String key, Object value, long timeToLive, long timeToIdle) throws CacheException{
 		
 		try{
 			this.sender.executeReplace(key, timeToLive, timeToIdle, value);
 			return this.receiver.processReplaceResult();
 		}
 		catch(CacheException e){
-			throw e instanceof StorageException?
-					(StorageException)e :
-					new StorageException(e.getCode(), e.getMessage(), e);
+			throw e;
 		}
 		catch(Throwable e){
-    		throw new StorageException(0, "client error: unknow error", e);
+    		throw new CacheException(e);
 		}
 		
 	}
     
 	public boolean replace(
 			String key, Object oldValue, 
-			Object newValue, long timeToLive, long timeToIdle) throws StorageException{
+			Object newValue, long timeToLive, long timeToIdle) throws CacheException{
 		
 		Boolean localTransaction = null;
 		
@@ -163,21 +169,18 @@ class BrCacheConnectionImp implements BrCacheConnection{
 			try{
 				this.rollbackLocalTransaction(localTransaction);
 			}
-			catch(TransactionException ex){
-				throw new StorageException(ex.getCode(), ex.getMessage(), e);
+			catch(CacheException ex){
+				throw ex;
 			}
 			catch(Throwable ex){
-				throw new StorageException(0, "rollback fail: " + ex.toString(), e);
+				throw new CacheException(0, "rollback fail: " + ex.toString(), e);
 			}
 			
 			if(e instanceof CacheException){
-				CacheException c = (CacheException)e;
-				throw e instanceof StorageException?
-						(StorageException)e :
-						new StorageException(c.getCode(), c.getMessage(), e);
+				throw (CacheException)e;
 			}
 			else{
-	    		throw new StorageException(0, "client error: unknow error", e);
+	    		throw new CacheException(e);
 			}
 		}
 		
