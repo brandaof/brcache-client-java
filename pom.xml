@@ -17,10 +17,10 @@
 		</license>
 	</licenses>
 
-	<scm>
+    <scm>
 		<connection>scm:svn:http://www.brandao.org/svn/brcache</connection>
-		<developerConnection>scm:svn:http://www.brandao.org/svn/brcache</developerConnection>
-		<url>http://wwww.brandao.org/svn/brcache</url>
+		<developerConnection>scm:svn:http://www.brandao.org/svn/brcache/trunk</developerConnection>
+		<url>http://www.brandao.org/svn/brcache</url>
 	</scm>
 
 	<distributionManagement>
