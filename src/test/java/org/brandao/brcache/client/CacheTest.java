@@ -214,9 +214,9 @@ public class CacheTest extends TestCase{
 			fail();
 		}
 		catch(StorageException e){
-			//if(!e.getError().equals(CacheErrors.ERROR_1029)){
+			if(e.getCode() != 1003 || !e.getMessage().equals("timeToLive is invalid!")){
 				fail();
-			//}
+			}
 				
 		}
 	}
@@ -264,9 +264,9 @@ public class CacheTest extends TestCase{
 			fail();
 		}
 		catch(StorageException e){
-			//if(!e.getError().equals(CacheErrors.ERROR_1028)){
+			if(e.getCode() != 1003 || !e.getMessage().equals("timeToIdle is invalid!")){
 				fail();
-			//}
+			}
 				
 		}
 	}
