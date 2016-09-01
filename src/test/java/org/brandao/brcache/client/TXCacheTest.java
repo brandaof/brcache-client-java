@@ -29,8 +29,8 @@ public class TXCacheTest extends TestCase{
 	public void setUp(){
 		Configuration config = new Configuration();
 
-		//liga o suporte transacional
 		config.setProperty("transaction_support", "true");
+		config.setProperty("max_size_key", "1024");
 		
 		this.server = new BrCacheServer(config);
 		EventQueue.invokeLater(new Runnable(){
@@ -385,11 +385,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
@@ -412,11 +413,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
@@ -441,15 +443,16 @@ public class TXCacheTest extends TestCase{
 	
 	public void testConcurrentTransactionReplaceExact() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionReplaceExact:";
-		BrCacheConnection con = this.connectionPool.getConnection();
+		final BrCacheConnection con = this.connectionPool.getConnection();
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, VALUE, VALUE2){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, value, 0, 0);
 			}
 			
@@ -474,11 +477,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
@@ -507,11 +511,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
@@ -537,11 +542,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
@@ -569,11 +575,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
@@ -601,11 +608,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
@@ -631,11 +639,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
@@ -665,11 +674,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
@@ -701,11 +711,12 @@ public class TXCacheTest extends TestCase{
 		con.connect();
 		
 
-		ConcurrentTask task = new ConcurrentTask(con, prefixKEY + KEY, CacheTestHelper.toStream(VALUE), CacheTestHelper.toStream(VALUE2)){
+		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
 			@Override
-			protected void execute(BrCacheConnection con, String key, Object value,
+			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
+				BrCacheConnection con = connectionPool.getConnection();
 				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
 			}
 			
