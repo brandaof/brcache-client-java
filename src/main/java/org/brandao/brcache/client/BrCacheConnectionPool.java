@@ -56,13 +56,13 @@ public class BrCacheConnectionPool {
      */
     public BrCacheConnectionPool(String host, int port, int minInstances, 
             int maxInstances) 
-            throws IOException, InterruptedException{
+            throws CacheException{
 
         this(host, port, minInstances, maxInstances, new DefaultStreamFactory());
     }
     
     public BrCacheConnectionPool(String host, int port, int minInstances, 
-            int maxInstances, StreamFactory streamFactory) throws IOException {
+            int maxInstances, StreamFactory streamFactory) throws CacheException {
 
         if(minInstances < 0)
             throw new IllegalArgumentException("minInstances");
@@ -89,7 +89,7 @@ public class BrCacheConnectionPool {
         
     }
     
-    private BrCacheConnection createConnection(String host, int port, StreamFactory streamFactory) throws IOException{
+    private BrCacheConnection createConnection(String host, int port, StreamFactory streamFactory) throws CacheException{
         BrCacheConnectionImp con = new BrCacheConnectionImp(host, port, streamFactory);
         con.connect();
         return 
@@ -101,61 +101,63 @@ public class BrCacheConnectionPool {
     
     /**
      * Obtém uma conexão.
-     * 
      * @return Conexão.
-     * @throws InterruptedException Lançada se ocorrer uma falha ao tentar 
-     * recuperar uma conexão.
-     * @throws IOException Lançada se ocorrer uma falha ao tentar 
-     * criar uma conexão.
+     * @throws CacheException Lançada se ocorrer uma falha ao tentar 
+     * recuperar ou criar uma conexão.
      */
-    public BrCacheConnection getConnection() 
-            throws InterruptedException, IOException {
+    public BrCacheConnection getConnection() throws CacheException{
         
-        BrCacheConnection con = this.instances.poll();
-        
-        if(con != null)
-            return con;
-        else{
-            synchronized(this){
-                if(this.createdInstances < this.maxInstances){
-                    con = createConnection(host, port, this.streamFactory);
-                    this.createdInstances++;
-                    return con;
-                }
-            }
-            return this.instances.take();
-        }
+    	try{
+	        BrCacheConnection con = this.instances.poll();
+	        
+	        if(con != null)
+	            return con;
+	        else{
+	            synchronized(this){
+	                if(this.createdInstances < this.maxInstances){
+	                    con = createConnection(host, port, this.streamFactory);
+	                    this.createdInstances++;
+	                    return con;
+	                }
+	            }
+	            return this.instances.take();
+	        }
+    	}
+    	catch(Throwable e){
+    		throw new CacheException(e);
+    	}
         
     }
 
     /**
      * Tenta obtém uma conexão.
-     * 
      * @return Conexão.
-     * @throws InterruptedException Lançada se ocorrer uma falha ao tentar 
-     * recuperar uma conexão.
-     * @throws IOException Lançada se ocorrer uma falha ao tentar 
-     * criar uma conexão.
+     * @throws CacheException Lançada se ocorrer uma falha ao tentar 
+     * recuperar ou criar uma conexão.
      */
-    public BrCacheConnection tryGetConnection(long l, TimeUnit tu) 
-            throws InterruptedException, IOException {
+    public BrCacheConnection tryGetConnection(long l, TimeUnit tu) throws CacheException{
         
-        BrCacheConnection con = this.instances.poll();
-        
-        if(con != null)
-            return con;
-        else{
-            synchronized(this){
-                if(this.createdInstances < this.maxInstances){
-                    con = createConnection(host, port, this.streamFactory);
-                    con.connect();
-                    this.createdInstances++;
-                    return con;
-                }
-                else
-                    return this.instances.poll(l, tu);
-            }
-        }
+    	try{
+	        BrCacheConnection con = this.instances.poll();
+	        
+	        if(con != null)
+	            return con;
+	        else{
+	            synchronized(this){
+	                if(this.createdInstances < this.maxInstances){
+	                    con = createConnection(host, port, this.streamFactory);
+	                    con.connect();
+	                    this.createdInstances++;
+	                    return con;
+	                }
+	                else
+	                    return this.instances.poll(l, tu);
+	            }
+	        }
+    	}
+    	catch(Throwable e){
+    		throw new CacheException(e);
+    	}
         
     }
     
