@@ -62,8 +62,10 @@ class BrConnectionInvocationHandler implements InvocationHandler{
 	            return method.invoke(connection, args);
 	        else
 	        if(name.equals(CLOSE_METHOD)){
-	        	this.pool.release(this.connection);
-	        	this.connection = null;
+	        	if(this.connection != null){
+	        		this.pool.release(this.connection);
+	        		this.connection = null;
+	        	}
 	        	return null;
 	        }
 	        else
@@ -74,4 +76,15 @@ class BrConnectionInvocationHandler implements InvocationHandler{
     	}
     }
     
+    protected void finalize() throws Throwable{
+    	try{
+    		if(this.connection != null){
+        		this.pool.shutdown(this.connection);
+        		this.connection = null;
+    		}
+    	}
+    	finally{
+    		super.finalize();
+    	}
+    }
 }

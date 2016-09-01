@@ -22,6 +22,7 @@ import java.lang.reflect.Proxy;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import org.junit.internal.Throwables;
 
 /**
  * Controla as conexões com o servidor.
@@ -172,6 +173,13 @@ public class BrCacheConnectionPool {
 	            this.instances.put(con);
 	        }
 	        catch(Throwable e){
+	        	try{
+	        		con.close();
+	        	}
+	        	catch(Throwable ex){
+	        		ex.printStackTrace();
+	        	}
+	        	
 	            this.createdInstances--;
 	        }
     	}
@@ -183,6 +191,13 @@ public class BrCacheConnectionPool {
      */
     synchronized void shutdown(BrCacheConnection con){
     	synchronized(this){
+        	try{
+        		con.close();
+        	}
+        	catch(Throwable ex){
+        		ex.printStackTrace();
+        	}
+    		
 	        this.createdInstances--;
 	        this.instances.remove(con);
     	}
