@@ -18,6 +18,7 @@
 package org.brandao.brcache.client;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
@@ -27,9 +28,11 @@ import java.lang.reflect.Proxy;
  */
 class BrConnectionInvocationHandler implements InvocationHandler{
 
-    private static final String CLOSE_METHOD = "close";
+    private static final String CLOSE_METHOD    = "close";
 
-    private static final String EQUALS_METHOD = "equals";
+    private static final String CONNECT_METHOD  = "connect";
+    
+    private static final String EQUALS_METHOD   = "equals";
 
     private static final String HASHCODE_METHOD = "hashCode";
     
@@ -44,26 +47,31 @@ class BrConnectionInvocationHandler implements InvocationHandler{
     
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         
-    	String name = method.getName();
-        if(name.equals(EQUALS_METHOD)){
-        	Object x = args[0];
-        	x = x instanceof Proxy? Proxy.getInvocationHandler(x) : x;
-            return this.equals(x);
-        }
-        if(name.equals(HASHCODE_METHOD)){
-            return this.hashCode();
-        }
-        else
-        if(!name.equals(CLOSE_METHOD))
-            return method.invoke(connection, args);
-        else
-        if(name.equals(CLOSE_METHOD)){
-        	this.pool.release(this.connection);
-        	this.connection = null;
-        	return null;
-        }
-        else
-            return null;
+    	try{
+	    	String name = method.getName();
+	        if(name.equals(EQUALS_METHOD)){
+	        	Object x = args[0];
+	        	x = x instanceof Proxy? Proxy.getInvocationHandler(x) : x;
+	            return this.equals(x);
+	        }
+	        if(name.equals(HASHCODE_METHOD)){
+	            return this.hashCode();
+	        }
+	        else
+	        if(!name.equals(CLOSE_METHOD))
+	            return method.invoke(connection, args);
+	        else
+	        if(name.equals(CLOSE_METHOD)){
+	        	this.pool.release(this.connection);
+	        	this.connection = null;
+	        	return null;
+	        }
+	        else
+	            return null;
+    	}
+    	catch(InvocationTargetException e){
+    		throw e.getCause();
+    	}
     }
     
 }

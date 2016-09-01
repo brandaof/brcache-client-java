@@ -82,7 +82,6 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     
     public BrCacheConnectionImp(String host, int port){
         this(host, port, new DefaultStreamFactory());
-        this.autocommit = true;
     }
     
     /**
@@ -91,15 +90,16 @@ public class BrCacheConnectionImp implements BrCacheConnection{
      * @param port Porta que o servidor está escutando.
      */
     public BrCacheConnectionImp(String host, int port, StreamFactory streamFactory){
-        this.host = host;
-        this.port = port;
-        this.streamFactory = streamFactory;
+        this.host 			= host;
+        this.port 			= port;
+        this.streamFactory 	= streamFactory;
     }
     
     public void connect() throws IOException{
-        this.socket   = new Socket(this.getHost(), this.getPort());
-        this.sender   = new BRCacheSender(socket, streamFactory, 8*1024);
-        this.receiver = new BRCacheReceiver(socket, streamFactory, 8*1024);
+        this.socket     = new Socket(this.getHost(), this.getPort());
+        this.sender     = new BRCacheSender(socket, streamFactory, 8*1024);
+        this.receiver   = new BRCacheReceiver(socket, streamFactory, 8*1024);
+        this.autocommit = true;
     }
     
     public void disconect() throws IOException{

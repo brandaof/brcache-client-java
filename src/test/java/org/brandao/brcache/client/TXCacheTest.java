@@ -260,7 +260,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionPutIfAbsent() throws Throwable{
 		String prefixKEY = "testExplicitTransactionPutIfAbsent:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		TestCase.assertNull(con.putIfAbsent(prefixKEY + KEY, VALUE, 0, 0));
