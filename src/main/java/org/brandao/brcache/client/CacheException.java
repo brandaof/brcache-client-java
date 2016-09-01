@@ -40,6 +40,10 @@ public class CacheException extends Exception{
     public CacheException(Throwable thrwbl) {
         this(2000, "client error", thrwbl);
     }
+
+    public CacheException(String string, Throwable thrwbl) {
+    	this(2000, "client error: " + string, thrwbl);
+    }
     
     public int getCode() {
 		return code;

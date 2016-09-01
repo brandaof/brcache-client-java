@@ -165,29 +165,13 @@ class BrCacheConnectionImp implements BrCacheConnection{
 			return result;
 		}
 		catch(Throwable e){
-			
-			try{
-				this.rollbackLocalTransaction(localTransaction);
-			}
-			catch(CacheException ex){
-				throw ex;
-			}
-			catch(Throwable ex){
-				throw new CacheException(0, "rollback fail: " + ex.toString(), e);
-			}
-			
-			if(e instanceof CacheException){
-				throw (CacheException)e;
-			}
-			else{
-	    		throw new CacheException(e);
-			}
+			throw this.rollbackLocalTransaction(localTransaction, e);
 		}
 		
 	}
 	
 	public Object putIfAbsent(
-			String key, Object value, long timeToLive, long timeToIdle) throws StorageException{
+			String key, Object value, long timeToLive, long timeToIdle) throws CacheException{
 		
 		Boolean localTransaction = null;
 		
@@ -202,75 +186,52 @@ class BrCacheConnectionImp implements BrCacheConnection{
 			return o;
 		}
 		catch(Throwable e){
-			
-			try{
-				this.rollbackLocalTransaction(localTransaction);
-			}
-			catch(TransactionException ex){
-				throw new StorageException(ex.getCode(), ex.getMessage(), e);
-			}
-			catch(Throwable ex){
-				throw new StorageException(0, "rollback fail: " + ex.toString(), e);
-			}
-			
-			if(e instanceof CacheException){
-				CacheException c = (CacheException)e;
-				throw e instanceof StorageException?
-						(StorageException)e :
-						new StorageException(c.getCode(), c.getMessage(), e);
-			}
-			else{
-	    		throw new StorageException(0, "client error: unknow error", e);
-			}
+			throw this.rollbackLocalTransaction(localTransaction, e);
 		}
 		
 	}
 	
     public boolean put(String key, Object value, long timeToLive, long timeToIdle) 
-            throws StorageException {
+            throws CacheException {
 
     	try{
 	    	this.sender.executePut(key, timeToLive, timeToIdle, value);
 	        return this.receiver.processPutResult();
     	}
 		catch(CacheException e){
-			throw e instanceof StorageException?
-					(StorageException)e :
-					new StorageException(e.getCode(), e.getMessage(), e);
+			throw e;
 		}
     	catch(Throwable e){
-    		throw new StorageException(0, "client error: unknow error", e);
+    		throw new CacheException(e);
     	}
         
     }
 
 	/* métodos de coleta*/
     
-    public Object get(String key, boolean forUpdate) throws RecoverException{
+    public Object get(String key, boolean forUpdate) throws CacheException{
     	
     	try{
 	    	this.sender.executeGet(key, forUpdate);
 	        return this.receiver.processGetResult();
     	}
 		catch(CacheException e){
-			throw e instanceof RecoverException?
-					(RecoverException)e :
-					new RecoverException(e.getCode(), e.getMessage(), e);
+			throw e;
 		}
     	catch(Throwable e){
-    		throw new RecoverException(0, "client error: unknow error", e);
+    		throw new CacheException(e);
     	}
     	
     }
     
-    public Object get(String key) throws RecoverException{
+    public Object get(String key) throws CacheException{
     	return this.get(key, false);
     }
 
     /* métodos de remoção */
 
 	public boolean remove(
-			String key, Object value) throws StorageException{
+			String key, Object value) throws CacheException{
 		
 		Boolean localTransaction = null;
 		
@@ -288,48 +249,27 @@ class BrCacheConnectionImp implements BrCacheConnection{
 			return result;
 		}
 		catch(Throwable e){
-			
-			try{
-				this.rollbackLocalTransaction(localTransaction);
-			}
-			catch(TransactionException ex){
-				throw new StorageException(ex.getCode(), ex.getMessage(), e);
-			}
-			catch(Throwable ex){
-				throw new StorageException(0, "rollback fail: " + ex.toString(), e);
-			}
-			
-			if(e instanceof CacheException){
-				CacheException c = (CacheException)e;
-				throw e instanceof StorageException?
-						(StorageException)e :
-						new StorageException(c.getCode(), c.getMessage(), e);
-			}
-			else{
-	    		throw new StorageException(0, "client error: unknow error", e);
-			}
+			throw this.rollbackLocalTransaction(localTransaction, e);
 		}
 		
 	}
     
-    public boolean remove(String key) throws StorageException{
+    public boolean remove(String key) throws CacheException{
 
     	try{
 	    	this.sender.executeRemove(key);
 	        return this.receiver.processRemoveResult();
     	}
 		catch(CacheException e){
-			throw e instanceof StorageException?
-					(StorageException)e :
-					new StorageException(e.getCode(), e.getMessage(), e);
+			throw e;
 		}
     	catch(Throwable e){
-    		throw new StorageException(0, "client error: unknow error", e);
+    		throw new CacheException(e);
     	}
     	
     }
     
-    public void setAutoCommit(boolean value) throws TransactionException{
+    public void setAutoCommit(boolean value) throws CacheException{
 
     	try{
 	    	if(value && !this.autocommit){
@@ -344,11 +284,11 @@ class BrCacheConnectionImp implements BrCacheConnection{
 	    	
 	    	this.autocommit = value;
     	}
-    	catch(TransactionException e){
+    	catch(CacheException e){
     		throw e;
     	}
     	catch(Throwable e){
-    		throw new TransactionException(0, "client error: unknow error", e);
+    		throw new CacheException(e);
     	}
     	
     }
@@ -357,29 +297,29 @@ class BrCacheConnectionImp implements BrCacheConnection{
     	return this.autocommit;
     }
     
-    public void commit() throws TransactionException{
+    public void commit() throws CacheException{
     	try{
     		this.sender.executeCommitTransaction();
     		this.receiver.processCommitTransactionResult();
     	}
-    	catch(TransactionException e){
+    	catch(CacheException e){
     		throw e;
     	}
     	catch(Throwable e){
-    		throw new TransactionException(0, "client error: unknow error", e);
+    		throw new CacheException(e);
     	}
     }
     
-    public void rollback() throws TransactionException{
+    public void rollback() throws CacheException{
     	try{
     		this.sender.executeCommitTransaction();
     		this.receiver.processCommitTransactionResult();
     	}
-    	catch(TransactionException e){
+    	catch(CacheException e){
     		throw e;
     	}
     	catch(Throwable e){
-    		throw new TransactionException(0, "client error: unknow error", e);
+    		throw new CacheException(e);
     	}
     }
     
@@ -395,7 +335,7 @@ class BrCacheConnectionImp implements BrCacheConnection{
         return streamFactory;
     }
     
-    private boolean startLocalTransaction() throws TransactionException{
+    private boolean startLocalTransaction() throws CacheException{
     	if(this.isAutoCommit()){
     		this.setAutoCommit(false);
     		return true;
@@ -404,16 +344,33 @@ class BrCacheConnectionImp implements BrCacheConnection{
     	return false;
     }
 
-    private void commitLocalTransaction(Boolean local) throws TransactionException{
+    private void commitLocalTransaction(Boolean local) throws CacheException{
     	if(local != null && local){
     		this.commit();
     	}
     }
 
-    private void rollbackLocalTransaction(Boolean local) throws TransactionException{
-    	if(local != null && local){
-    		this.rollback();
-    	}
+    private CacheException rollbackLocalTransaction(Boolean local, Throwable e){
+    	
+    	try{
+        	if(local != null && local){
+        		this.rollback();
+        	}
+		}
+		catch(CacheException ex){
+			return ex;
+		}
+		catch(Throwable ex){
+			return new CacheException("rollback fail: " + ex.toString(), e);
+		}
+		
+		if(e instanceof CacheException){
+			 return (CacheException)e;
+		}
+		else{
+    		return new CacheException(e);
+		}
+		
     }
     
     @SuppressWarnings("unused")
