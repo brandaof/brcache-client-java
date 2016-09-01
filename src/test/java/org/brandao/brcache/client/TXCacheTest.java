@@ -26,7 +26,12 @@ public class TXCacheTest extends TestCase{
 	
 	@Override
 	public void setUp(){
-		this.server = new BrCacheServer(new Configuration());
+		Configuration config = new Configuration();
+
+		//liga o suporte transacional
+		config.setProperty("transaction_support", "true");
+		
+		this.server = new BrCacheServer(config);
 		EventQueue.invokeLater(new Runnable(){
 
 			public void run() {
@@ -63,7 +68,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testReplaceSuccess() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testReplaceSuccess:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
@@ -73,7 +78,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testReplaceExact() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testReplaceExact:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -81,7 +86,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testReplaceExactSuccess() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testReplaceExactSuccess:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -94,7 +99,7 @@ public class TXCacheTest extends TestCase{
 	/* putIfAbsent */
 	
 	public void testputIfAbsent() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testputIfAbsent:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -103,7 +108,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testputIfAbsentExistValue() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testputIfAbsentExistValue:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -115,7 +120,7 @@ public class TXCacheTest extends TestCase{
 	/* put */
 	
 	public void testPut() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testPut:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -127,7 +132,7 @@ public class TXCacheTest extends TestCase{
 	/* get */
 	
 	public void testGet() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testGet:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -137,7 +142,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testGetOverride() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testGetOverride:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -151,7 +156,7 @@ public class TXCacheTest extends TestCase{
 	/* remove */
 	
 	public void testRemoveExact() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testRemoveExact:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -169,7 +174,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testRemove() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testRemove:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -190,7 +195,7 @@ public class TXCacheTest extends TestCase{
 	/* replace */
 	
 	public void testExplicitTransactionReplace() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionReplace:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -201,7 +206,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testExplicitTransactionReplaceSuccess() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionReplaceSuccess:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -216,7 +221,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testExplicitTransactionReplaceExact() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionReplaceExact:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -227,7 +232,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testExplicitTransactionReplaceExactSuccess() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionReplaceExactSuccess:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -244,7 +249,7 @@ public class TXCacheTest extends TestCase{
 	/* putIfAbsent */
 	
 	public void testExplicitTransactionPutIfAbsent() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionPutIfAbsent:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -257,7 +262,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testExplicitTransactionPutIfAbsentExistValue() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionPutIfAbsentExistValue:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -273,7 +278,7 @@ public class TXCacheTest extends TestCase{
 	/* put */
 	
 	public void testExplicitTransactionPut() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionPut:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -289,7 +294,7 @@ public class TXCacheTest extends TestCase{
 	/* get */
 	
 	public void testExplicitTransactionGet() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionGet:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -303,7 +308,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testExplicitTransactionGetOverride() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionGetOverride:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -321,7 +326,7 @@ public class TXCacheTest extends TestCase{
 	/* remove */
 	
 	public void testExplicitTransactionRemoveExact() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionRemoveExact:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -342,7 +347,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testExplicitTransactionRemove() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testExplicitTransactionRemove:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -367,7 +372,7 @@ public class TXCacheTest extends TestCase{
 	/* replace */
 	
 	public void testConcurrentTransactionReplace() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionReplace:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -394,7 +399,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testConcurrentTransactionReplaceSuccess() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionReplaceSuccess:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -427,7 +432,7 @@ public class TXCacheTest extends TestCase{
 	}
 	
 	public void testConcurrentTransactionReplaceExact() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionReplaceExact:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -456,7 +461,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testConcurrentTransactionReplaceExactSuccess() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionReplaceExactSuccess:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -489,7 +494,7 @@ public class TXCacheTest extends TestCase{
 	/* putIfAbsent */
 	
 	public void testConcurrentTransactionPutIfAbsent() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionPutIfAbsent:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -519,7 +524,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testConcurrentTransactionPutIfAbsentExistValue() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionPutIfAbsentExistValue:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -551,7 +556,7 @@ public class TXCacheTest extends TestCase{
 	/* put */
 	
 	public void testConcurrentTransactionPut() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionPut:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -583,7 +588,7 @@ public class TXCacheTest extends TestCase{
 	/* get */
 	
 	public void testConcurrentTransactionGet() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionGet:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -613,7 +618,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testConcurrentTransactionGetOverride() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionGetOverride:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -647,7 +652,7 @@ public class TXCacheTest extends TestCase{
 	/* remove */
 	
 	public void testConcurrentTransactionRemoveExact() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionRemoveExact:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -683,7 +688,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testConcurrentTransactionRemove() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testConcurrentTransactionRemove:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -719,7 +724,7 @@ public class TXCacheTest extends TestCase{
 	/* timeToLive */
 	
 	public void testTimeToLive() throws Throwable{
-		final String prefixKEY = "testReplace:";
+		final String prefixKEY = "testTimeToLive:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -732,7 +737,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testTimeToLiveLessThanTimeToIdle() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testTimeToLiveLessThanTimeToIdle:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -744,7 +749,7 @@ public class TXCacheTest extends TestCase{
 
 	public void testNegativeTimeToLive() throws Throwable{
 		try{
-			String prefixKEY = "testReplace:";
+			String prefixKEY = "testNegativeTimeToLive:";
 			BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 			con.connect();
 			
@@ -762,7 +767,7 @@ public class TXCacheTest extends TestCase{
 	/* TimeToIdle */
 	
 	public void testTimeToIdle() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testTimeToIdle:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 		
@@ -778,7 +783,7 @@ public class TXCacheTest extends TestCase{
 	}
 
 	public void testTimeToIdleLessThanTimeToLive() throws Throwable{
-		String prefixKEY = "testReplace:";
+		String prefixKEY = "testTimeToIdleLessThanTimeToLive:";
 		BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 		con.connect();
 
@@ -794,7 +799,7 @@ public class TXCacheTest extends TestCase{
 
 	public void testNegativeTimeToIdle() throws Throwable{
 		try{
-			String prefixKEY = "testReplace:";
+			String prefixKEY = "testNegativeTimeToIdle:";
 			BrCacheConnection con = new BrCacheConnectionImp(SERVER_HOST, SERVER_PORT);
 			con.connect();
 			
