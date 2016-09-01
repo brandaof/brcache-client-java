@@ -195,7 +195,7 @@ class BRCacheReceiver {
 	
 	private Error parseError(byte[] value){
 		String error   = new String(value);
-		String codeSTR = error.substring(6, 9);
+		String codeSTR = error.substring(6, 10);
 		String message = error.substring(12, error.length());
 		return new Error(Integer.parseInt(codeSTR), message);
 	}
