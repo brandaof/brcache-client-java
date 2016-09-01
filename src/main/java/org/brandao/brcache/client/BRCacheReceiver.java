@@ -67,6 +67,12 @@ class BRCacheReceiver {
 		
 		if(ArraysUtil.startsWith(header, BrCacheConnectionImp.VALUE_RESULT_DTA)){
 			CacheEntry e = this.getObject(header);
+			
+			byte[] boundary = this.getLine();
+			if(!Arrays.equals(BrCacheConnectionImp.BOUNDARY_DTA, boundary)){
+				throw new RecoverException("expected: end ");
+			}
+			
 			return e == null? null : this.toObject(e.getData());
 		}
 		else{
@@ -111,17 +117,22 @@ class BRCacheReceiver {
 		int size         = Integer.parseInt(new String(dataParams[1]));
 		int flags        = Integer.parseInt(new String(dataParams[2]));
 		
-		byte[] dta = new byte[size];
-		this.in.read(dta, 0, dta.length);
-		
-		byte[] endData = new byte[2];
-		this.in.read(endData, 0, endData.length);
-		
-		if(!Arrays.equals(BrCacheConnectionImp.CRLF_DTA, endData)){
-			throw new IOException("corrupted data: " + key);
+		if(size > 0){
+			byte[] dta = new byte[size];
+			this.in.read(dta, 0, dta.length);
+			
+			byte[] endData = new byte[2];
+			this.in.read(endData, 0, endData.length);
+			
+			if(!Arrays.equals(BrCacheConnectionImp.CRLF_DTA, endData)){
+				throw new IOException("corrupted data: " + key);
+			}
+			
+			return new CacheEntry(key, size, flags, dta);
 		}
-		
-		return size == 0? null : new CacheEntry(key, size, flags, dta);
+		else{
+			return null;
+		}
 		
 	}
 
