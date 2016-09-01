@@ -391,7 +391,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value, 0, 0);
 			}
 			
 		};
@@ -404,6 +404,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE, con.get(prefixKEY + KEY));
 	}
 
@@ -419,7 +422,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value, 0, 0);
 			}
 			
 		};
@@ -438,6 +441,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE, (String)con.get(prefixKEY + KEY));
 	}
 	
@@ -468,6 +474,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE, con.get(prefixKEY + KEY));
 	}
 
@@ -483,7 +492,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value, 0, 0);
 			}
 			
 		};
@@ -500,6 +509,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE, (String)con.get(prefixKEY + KEY));
 	}
 
@@ -517,7 +529,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value2, 0, 0);
 			}
 			
 		};
@@ -533,6 +545,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
@@ -548,7 +563,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value2, 0, 0);
 			}
 			
 		};
@@ -564,6 +579,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
@@ -581,7 +599,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value2, 0, 0);
 			}
 			
 		};
@@ -597,6 +615,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
@@ -614,7 +635,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value2, 0, 0);
 			}
 			
 		};
@@ -630,6 +651,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
@@ -645,7 +669,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value2, 0, 0);
 			}
 			
 		};
@@ -663,6 +687,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
@@ -680,7 +707,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value2, 0, 0);
 			}
 			
 		};
@@ -702,6 +729,11 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		
+		if(task.getError() != null){
+			throw task.getError();
+		}
+		
 		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
@@ -717,7 +749,7 @@ public class TXCacheTest extends TestCase{
 			protected void execute(String key, Object value,
 					Object value2) throws Throwable {
 				BrCacheConnection con = connectionPool.getConnection();
-				con.put(prefixKEY + KEY, (InputStream)value, 0, 0);
+				con.put(prefixKEY + KEY, value2, 0, 0);
 			}
 			
 		};
@@ -737,6 +769,9 @@ public class TXCacheTest extends TestCase{
 		con.commit();
 		
 		Thread.sleep(1000);
+		if(task.getError() != null){
+			throw task.getError();
+		}
 		TestCase.assertEquals(VALUE2, con.get(prefixKEY + KEY));
 	}
 
