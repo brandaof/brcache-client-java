@@ -81,7 +81,13 @@ class BrCacheConnectionImp implements BrCacheConnection{
     
     private boolean closed;
     
-    public BrCacheConnectionImp(String host, int port){
+    /**
+     * Cria uma nova instância de {@link BrCacheConnection}
+     * @param host Endereço do servidor.
+     * @param port Porta que o servidor está escutando.
+     * @throws CacheException 
+     */
+    public BrCacheConnectionImp(String host, int port) throws CacheException{
         this(host, port, new DefaultStreamFactory());
     }
     
@@ -89,11 +95,13 @@ class BrCacheConnectionImp implements BrCacheConnection{
      * Cria uma nova instância de {@link BrCacheConnection}
      * @param host Endereço do servidor.
      * @param port Porta que o servidor está escutando.
+     * @throws CacheException 
      */
-    public BrCacheConnectionImp(String host, int port, StreamFactory streamFactory){
+    public BrCacheConnectionImp(String host, int port, StreamFactory streamFactory) throws CacheException{
         this.host 			= host;
         this.port 			= port;
         this.streamFactory 	= streamFactory;
+        this.connect();
     }
     
     public void connect() throws CacheException{

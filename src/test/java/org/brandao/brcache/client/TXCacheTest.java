@@ -1,7 +1,6 @@
 package org.brandao.brcache.client;
 
 import java.awt.EventQueue;
-import java.io.InputStream;
 
 import org.brandao.brcache.Configuration;
 import org.brandao.brcache.client.TXCacheHelper.ConcurrentTask;
@@ -72,14 +71,12 @@ public class TXCacheTest extends TestCase{
 	public void testReplace() throws Throwable{
 		String prefixKEY = "testReplace:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		TestCase.assertFalse(con.replace(prefixKEY + KEY, VALUE, 0, 0));
 	}
 
 	public void testReplaceSuccess() throws Throwable{
 		String prefixKEY = "testReplaceSuccess:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
 		TestCase.assertEquals(VALUE, (String)con.get(prefixKEY + KEY));
 		TestCase.assertTrue(con.replace(prefixKEY + KEY, VALUE2, 0, 0));
@@ -89,7 +86,6 @@ public class TXCacheTest extends TestCase{
 	public void testReplaceExact() throws Throwable{
 		String prefixKEY = "testReplaceExact:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		TestCase.assertFalse(con.replace(prefixKEY + KEY, VALUE, VALUE2, 0, 0));
 	}
@@ -97,7 +93,6 @@ public class TXCacheTest extends TestCase{
 	public void testReplaceExactSuccess() throws Throwable{
 		String prefixKEY = "testReplaceExactSuccess:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
 		TestCase.assertEquals(VALUE, (String)con.get(prefixKEY + KEY));
@@ -110,7 +105,6 @@ public class TXCacheTest extends TestCase{
 	public void testputIfAbsent() throws Throwable{
 		String prefixKEY = "testputIfAbsent:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		TestCase.assertNull(con.putIfAbsent(prefixKEY + KEY, VALUE, 0, 0));
 		TestCase.assertEquals(VALUE, (String)con.get(prefixKEY + KEY));
@@ -119,7 +113,6 @@ public class TXCacheTest extends TestCase{
 	public void testputIfAbsentExistValue() throws Throwable{
 		String prefixKEY = "testputIfAbsentExistValue:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
 		TestCase.assertEquals(VALUE, con.putIfAbsent(prefixKEY + KEY, VALUE2, 0, 0));
@@ -131,7 +124,6 @@ public class TXCacheTest extends TestCase{
 	public void testPut() throws Throwable{
 		String prefixKEY = "testPut:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		TestCase.assertNull((String)con.get(prefixKEY + KEY));
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
@@ -143,7 +135,6 @@ public class TXCacheTest extends TestCase{
 	public void testGet() throws Throwable{
 		String prefixKEY = "testGet:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		TestCase.assertNull((String)con.get(prefixKEY + KEY));
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
@@ -153,7 +144,6 @@ public class TXCacheTest extends TestCase{
 	public void testGetOverride() throws Throwable{
 		String prefixKEY = "testGetOverride:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		TestCase.assertNull((String)con.get(prefixKEY + KEY));
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
@@ -167,8 +157,6 @@ public class TXCacheTest extends TestCase{
 	public void testRemoveExact() throws Throwable{
 		String prefixKEY = "testRemoveExact:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 		
 		TestCase.assertNull((String)con.get(prefixKEY + KEY));
 		TestCase.assertFalse(con.remove(prefixKEY + KEY, VALUE));
@@ -185,8 +173,6 @@ public class TXCacheTest extends TestCase{
 	public void testRemove() throws Throwable{
 		String prefixKEY = "testRemove:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 		
 		TestCase.assertNull((String)con.get(prefixKEY + KEY));
 		TestCase.assertFalse(con.remove(prefixKEY + KEY));
@@ -206,7 +192,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionReplace() throws Throwable{
 		String prefixKEY = "testExplicitTransactionReplace:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		TestCase.assertFalse(con.replace(prefixKEY + KEY, VALUE, 0, 0));
@@ -217,7 +202,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionReplaceSuccess() throws Throwable{
 		String prefixKEY = "testExplicitTransactionReplaceSuccess:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
@@ -232,7 +216,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionReplaceExact() throws Throwable{
 		String prefixKEY = "testExplicitTransactionReplaceExact:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		TestCase.assertFalse(con.replace(prefixKEY + KEY, VALUE, VALUE2, 0, 0));
@@ -243,7 +226,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionReplaceExactSuccess() throws Throwable{
 		String prefixKEY = "testExplicitTransactionReplaceExactSuccess:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
@@ -272,7 +254,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionPutIfAbsentExistValue() throws Throwable{
 		String prefixKEY = "testExplicitTransactionPutIfAbsentExistValue:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		con.put(prefixKEY + KEY, VALUE, 0, 0);
@@ -288,7 +269,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionPut() throws Throwable{
 		String prefixKEY = "testExplicitTransactionPut:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		TestCase.assertNull((String)con.get(prefixKEY + KEY));
@@ -304,7 +284,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionGet() throws Throwable{
 		String prefixKEY = "testExplicitTransactionGet:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		TestCase.assertNull((String)con.get(prefixKEY + KEY));
@@ -318,7 +297,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionGetOverride() throws Throwable{
 		String prefixKEY = "testExplicitTransactionGetOverride:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		TestCase.assertNull((String)con.get(prefixKEY + KEY));
@@ -336,7 +314,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionRemoveExact() throws Throwable{
 		String prefixKEY = "testExplicitTransactionRemoveExact:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		
@@ -357,7 +334,6 @@ public class TXCacheTest extends TestCase{
 	public void testExplicitTransactionRemove() throws Throwable{
 		String prefixKEY = "testExplicitTransactionRemove:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.setAutoCommit(false);
 		
@@ -382,8 +358,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionReplace() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionReplace:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -413,8 +387,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionReplaceSuccess() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionReplaceSuccess:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -450,8 +422,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionReplaceExact() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionReplaceExact:";
 		final BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -483,8 +453,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionReplaceExactSuccess() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionReplaceExactSuccess:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -520,8 +488,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionPutIfAbsent() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionPutIfAbsent:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -554,8 +520,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionPutIfAbsentExistValue() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionPutIfAbsentExistValue:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -590,8 +554,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionPut() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionPut:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -626,8 +588,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionGet() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionGet:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -660,8 +620,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionGetOverride() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionGetOverride:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -698,8 +656,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionRemoveExact() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionRemoveExact:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -740,8 +696,6 @@ public class TXCacheTest extends TestCase{
 	public void testConcurrentTransactionRemove() throws Throwable{
 		final String prefixKEY = "testConcurrentTransactionRemove:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
-		
 
 		ConcurrentTask task = new ConcurrentTask(prefixKEY + KEY, VALUE, VALUE2){
 
@@ -780,7 +734,6 @@ public class TXCacheTest extends TestCase{
 	public void testTimeToLive() throws Throwable{
 		final String prefixKEY = "testTimeToLive:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.put(prefixKEY + KEY, VALUE, 1000, 0);
 		assertEquals(con.get(prefixKEY + KEY), VALUE);
@@ -793,7 +746,6 @@ public class TXCacheTest extends TestCase{
 	public void testTimeToLiveLessThanTimeToIdle() throws Throwable{
 		String prefixKEY = "testTimeToLiveLessThanTimeToIdle:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.put(prefixKEY + KEY, VALUE, 1000, 5000);
 		assertEquals(con.get(prefixKEY + KEY), VALUE);
@@ -805,7 +757,6 @@ public class TXCacheTest extends TestCase{
 		try{
 			String prefixKEY = "testNegativeTimeToLive:";
 			BrCacheConnection con = this.connectionPool.getConnection();
-			con.connect();
 			
 			con.put(prefixKEY + KEY, VALUE, -1, 5000);
 			fail();
@@ -823,7 +774,6 @@ public class TXCacheTest extends TestCase{
 	public void testTimeToIdle() throws Throwable{
 		String prefixKEY = "testTimeToIdle:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 		
 		con.put(prefixKEY + KEY, VALUE, 0, 1000);
 		assertEquals(con.get(prefixKEY + KEY), VALUE);
@@ -839,7 +789,6 @@ public class TXCacheTest extends TestCase{
 	public void testTimeToIdleLessThanTimeToLive() throws Throwable{
 		String prefixKEY = "testTimeToIdleLessThanTimeToLive:";
 		BrCacheConnection con = this.connectionPool.getConnection();
-		con.connect();
 
 		con.put(prefixKEY + KEY, VALUE, 20000, 1000);
 		assertEquals(con.get(prefixKEY + KEY), VALUE);
@@ -855,7 +804,6 @@ public class TXCacheTest extends TestCase{
 		try{
 			String prefixKEY = "testNegativeTimeToIdle:";
 			BrCacheConnection con = this.connectionPool.getConnection();
-			con.connect();
 			
 			con.put(prefixKEY + KEY, VALUE, 0, -1);
 			fail();

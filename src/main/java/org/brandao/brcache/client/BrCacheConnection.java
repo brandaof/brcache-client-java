@@ -24,13 +24,13 @@ package org.brandao.brcache.client;
  */
 public interface BrCacheConnection {
     
-    /**
+    /*
      * Faz a conexão com o servidor.
      * 
      * @throws CacheException Lançada caso ocorra alguma falha ao tentar se
      * conectar ao servidor.
      */
-    void connect() throws CacheException;
+    //void connect() throws CacheException;
     
     /**
      * Fecha a conexão com o servidor.

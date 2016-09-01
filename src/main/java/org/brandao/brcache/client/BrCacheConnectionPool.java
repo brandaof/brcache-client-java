@@ -146,7 +146,7 @@ public class BrCacheConnectionPool {
 	            synchronized(this){
 	                if(this.createdInstances < this.maxInstances){
 	                    con = createConnection(host, port, this.streamFactory);
-	                    con.connect();
+	                    //((BrCacheConnectionImp)con).connect();
 	                    this.createdInstances++;
 	                    return con;
 	                }
