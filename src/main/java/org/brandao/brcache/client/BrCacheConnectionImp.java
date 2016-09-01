@@ -19,7 +19,6 @@ package org.brandao.brcache.client;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
 import java.util.zip.CRC32;
 
 /**
@@ -59,7 +58,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     
     public static final byte[] REPLACE_SUCCESS_DTA       = "replaced".getBytes();
 
-    public static final byte[] NOT_STORE_DTA             = "not_store".getBytes();
+    public static final byte[] NOT_STORED_DTA             = "not_stored".getBytes();
     
     public static final byte[] NOT_FOUND_DTA             = "not_found".getBytes();
     
@@ -125,7 +124,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 			throw e;
 		}
 		catch(Throwable e){
-			throw new StorageException(e);
+    		throw new StorageException(0, "client error: unknow error", e);
 		}
 		
 	}
@@ -154,17 +153,23 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 			try{
 				this.rollbackLocalTransaction(localTransaction);
 			}
+			catch(TransactionException ex){
+				throw new StorageException(ex.getCode(), ex.getMessage(), e);
+			}
 			catch(Throwable ex){
-				throw new StorageException("rollback fail: " + ex.toString(), e);
+				throw new StorageException(0, "rollback fail: " + ex.toString(), e);
 			}
 			
-			if(e instanceof RecoverException)
-				throw new StorageException(e.getMessage(), e);
+			if(e instanceof RecoverException){
+				RecoverException r = (RecoverException)e;
+				throw new StorageException(r.getCode(), r.getMessage(), r);
+			}
 			else
 			if(e instanceof StorageException)
 				throw (StorageException)e;
-			else
-				throw new StorageException(e.getMessage());
+			else{
+	    		throw new StorageException(0, "client error: unknow error", e);
+			}
 		}
 		
 	}
@@ -189,17 +194,23 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 			try{
 				this.rollbackLocalTransaction(localTransaction);
 			}
+			catch(TransactionException ex){
+				throw new StorageException(ex.getCode(), ex.getMessage(), e);
+			}
 			catch(Throwable ex){
-				throw new StorageException("rollback fail: " + ex.toString(), e);
+				throw new StorageException(0, "rollback fail: " + ex.toString(), e);
 			}
 			
-			if(e instanceof RecoverException)
-				throw new StorageException(e.getMessage(), e);
+			if(e instanceof RecoverException){
+				RecoverException r = (RecoverException)e;
+				throw new StorageException(r.getCode(), r.getMessage(), r);
+			}
 			else
 			if(e instanceof StorageException)
 				throw (StorageException)e;
-			else
-				throw new StorageException(e.getMessage());
+			else{
+	    		throw new StorageException(0, "client error: unknow error", e);
+			}
 		}
 		
 	}
@@ -215,7 +226,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     		throw e;
     	}
     	catch(Throwable e){
-    		throw new StorageException(e);
+    		throw new StorageException(0, "client error: unknow error", e);
     	}
         
     }
@@ -232,7 +243,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     		throw e;
     	}
     	catch(Throwable e){
-    		throw new RecoverException(e);
+    		throw new RecoverException(0, "client error: unknow error", e);
     	}
     	
     }
@@ -266,17 +277,23 @@ public class BrCacheConnectionImp implements BrCacheConnection{
 			try{
 				this.rollbackLocalTransaction(localTransaction);
 			}
+			catch(TransactionException ex){
+				throw new StorageException(ex.getCode(), ex.getMessage(), e);
+			}
 			catch(Throwable ex){
-				throw new StorageException("rollback fail: " + ex.toString(), e);
+				throw new StorageException(0, "rollback fail: " + ex.toString(), e);
 			}
 			
-			if(e instanceof RecoverException)
-				throw new StorageException(e.getMessage(), e);
+			if(e instanceof RecoverException){
+				RecoverException r = (RecoverException)e;
+				throw new StorageException(r.getCode(), r.getMessage(), r);
+			}
 			else
 			if(e instanceof StorageException)
 				throw (StorageException)e;
-			else
-				throw new StorageException(e.getMessage());
+			else{
+	    		throw new StorageException(0, "client error: unknow error", e);
+			}
 		}
 		
 	}
@@ -291,7 +308,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     		throw e;
     	}
     	catch(Throwable e){
-    		throw new StorageException(e);
+    		throw new StorageException(0, "client error: unknow error", e);
     	}
     	
     }
@@ -315,7 +332,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     		throw e;
     	}
     	catch(Throwable e){
-    		throw new TransactionException(e);
+    		throw new TransactionException(0, "client error: unknow error", e);
     	}
     	
     }
@@ -333,7 +350,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     		throw e;
     	}
     	catch(Throwable e){
-    		throw new TransactionException(e);
+    		throw new TransactionException(0, "client error: unknow error", e);
     	}
     }
     
@@ -346,7 +363,7 @@ public class BrCacheConnectionImp implements BrCacheConnection{
     		throw e;
     	}
     	catch(Throwable e){
-    		throw new TransactionException(e);
+    		throw new TransactionException(0, "client error: unknow error", e);
     	}
     }
     

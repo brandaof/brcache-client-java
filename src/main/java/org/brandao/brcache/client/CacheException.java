@@ -26,20 +26,20 @@ public class CacheException  extends Exception{
     
 	private static final long serialVersionUID = -2125449136205991256L;
 
-	public CacheException() {
-        super();
-    }
+	private int code;
 
-    public CacheException(String string) {
+    public CacheException(int code, String string) {
         super(string);
+        this.code = code;
     }
-
-    public CacheException(String string, Throwable thrwbl) {
+	
+    public CacheException(int code, String string, Throwable thrwbl) {
         super(string, thrwbl);
+        this.code = code;
     }
 
-    public CacheException(Throwable thrwbl) {
-        super(thrwbl);
-    }
+    public int getCode() {
+		return code;
+	}
     
 }

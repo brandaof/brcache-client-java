@@ -36,7 +36,8 @@ class BRCacheReceiver {
 			return true;
 		}
 		else{
-			throw new StorageException(new String(result));
+			Error err = this.parseError(result);
+			throw new StorageException(err.code, err.message);
 		}
 		
 	}
@@ -49,7 +50,7 @@ class BRCacheReceiver {
 		
 		byte[] result = this.getLine();
 		
-		if(Arrays.equals(BrCacheConnectionImp.NOT_STORE_DTA, result)){
+		if(Arrays.equals(BrCacheConnectionImp.NOT_STORED_DTA, result)){
 			return false;
 		}
 		else
@@ -57,7 +58,8 @@ class BRCacheReceiver {
 			return true;
 		}
 		else{
-			throw new StorageException(new String(result));
+			Error err = this.parseError(result);
+			throw new StorageException(err.code, err.message);
 		}
 		
 	}
@@ -70,13 +72,14 @@ class BRCacheReceiver {
 			
 			byte[] boundary = this.getLine();
 			if(!Arrays.equals(BrCacheConnectionImp.BOUNDARY_DTA, boundary)){
-				throw new RecoverException("expected: end ");
+				throw new RecoverException(1021, "Get item error: expected end");
 			}
 			
 			return e == null? null : this.toObject(e.getData());
 		}
 		else{
-			throw new RecoverException(new String(header));
+			Error err = this.parseError(header);
+			throw new RecoverException(err.code, err.message);
 		}
 	}
 
@@ -94,7 +97,8 @@ class BRCacheReceiver {
 		}
 		
 		if(!Arrays.equals(BrCacheConnectionImp.BOUNDARY_DTA, header)){
-			throw new RecoverException(new String(header));
+			Error err = this.parseError(header);
+			throw new RecoverException(err.code, err.message);
 		}
 		
 		return result;
@@ -151,7 +155,8 @@ class BRCacheReceiver {
 			return false;
 		}
 		else{
-			throw new StorageException(new String(result));
+			Error err = this.parseError(result);
+			throw new StorageException(err.code, err.message);
 		}
 		
 	}
@@ -176,7 +181,8 @@ class BRCacheReceiver {
 		byte[] result = this.getLine();
 
 		if(!Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, result)){
-			throw new TransactionException(new String(result));
+			Error err = this.parseError(result);
+			throw new TransactionException(err.code, err.message);
 		}
 		
 	}
@@ -185,6 +191,13 @@ class BRCacheReceiver {
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
 		ObjectInputStream bin = new ObjectInputStream(in);
 		return bin.readObject();
+	}
+	
+	private Error parseError(byte[] value){
+		String error   = new String(value);
+		String codeSTR = error.substring(6, 9);
+		String message = error.substring(12, error.length());
+		return new Error(Integer.parseInt(codeSTR), message);
 	}
 	
 	private byte[] getLine() throws IOException{
@@ -211,4 +224,17 @@ class BRCacheReceiver {
 		
 	}
 	
+	private static class Error{
+		
+		public int code;
+		
+		public String message;
+
+		public Error(int code, String message) {
+			super();
+			this.code = code;
+			this.message = message;
+		}
+		
+	}
 }

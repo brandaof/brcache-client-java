@@ -7,29 +7,17 @@ package org.brandao.brcache.client;
  *
  */
 public class TransactionException 
-	extends Exception{
+	extends CacheException{
 
-	private static final long serialVersionUID = 4216893703188841533L;
+	private static final long serialVersionUID = 5868004710643964867L;
 
-	public TransactionException() {
-		super();
+	public TransactionException(int code, String string, Throwable thrwbl) {
+		super(code, string, thrwbl);
 	}
 
-	public TransactionException(String message, Throwable cause,
-			boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
+	public TransactionException(int code, String string) {
+		super(code, string);
 	}
 
-	public TransactionException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public TransactionException(String message) {
-		super(message);
-	}
-
-	public TransactionException(Throwable cause) {
-		super(cause);
-	}
 
 }
