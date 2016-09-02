@@ -303,7 +303,7 @@ class BrCacheConnectionImp implements BrCacheConnection{
     	
     }
     
-    public boolean isAutoCommit(){
+    public boolean isAutoCommit() throws CacheException{
     	return this.autocommit;
     }
     
