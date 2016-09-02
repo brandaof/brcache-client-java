@@ -283,12 +283,11 @@ class BrCacheConnectionImp implements BrCacheConnection{
     public void setAutoCommit(boolean value) throws CacheException{
 
     	try{
-	    	if(value && !this.autocommit){
+	    	if(value){
 	    		this.sender.executeCommitTransaction();
 	    		this.receiver.processCommitTransactionResult();
 	    	}
-	    	else
-	    	if(this.autocommit){
+	    	else{
 	    		this.sender.executeBeginTransaction();
 	    		this.receiver.processBeginTransactionResult();
 	    	}
