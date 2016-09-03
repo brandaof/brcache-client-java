@@ -57,8 +57,8 @@ class ArraysUtil {
 			
 		}
 		
-		if(start == limit && array[limit] != 32){
-			byte[] item = copy(array, start, start + 1);
+		if(start != limit || (start == limit && array[limit] != 32) ){
+			byte[] item = copy(array, start, limit + 1);
 			result.add(item);
 		}
 		
