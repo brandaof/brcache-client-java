@@ -199,6 +199,26 @@ class BRCacheSender {
 		
 		out.flush();
 	}
+
+	public void executeSetVar(String var, Object value) throws IOException{
+		
+		/*
+			set_var <var_name> <var_value>\r\n
+		 */
+		
+		String strValue = String.valueOf(value);
+		
+		out.write(BrCacheConnectionImp.SET_VAR);	
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
+		out.write(var.getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
+		out.write(strValue.getBytes(BrCacheConnectionImp.ENCODE));	
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
+		out.flush();
+	}
 	
 	private byte[] toBytes(Object value) throws IOException{
 		

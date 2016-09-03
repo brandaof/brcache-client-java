@@ -32,6 +32,8 @@ class BrCacheConnectionImp implements BrCacheConnection{
     public static final byte[] DEFAULT_FLAGS_DTA         = "0".getBytes();
     
     public static final byte[] SHOW_VAR                  = "show_var".getBytes();
+
+    public static final byte[] SET_VAR                   = "set_var".getBytes();
     
     public static final byte[] SHOW_VARS                 = "show_vars".getBytes();
     
@@ -81,15 +83,13 @@ class BrCacheConnectionImp implements BrCacheConnection{
 
     private BRCacheReceiver receiver;
     
-    private boolean autocommit;
-    
     private boolean closed;
     
     /**
      * Cria uma nova instância de {@link BrCacheConnection}
      * @param host Endereço do servidor.
      * @param port Porta que o servidor está escutando.
-     * @throws CacheException 
+     * @throws CacheException Lançada se não for possível a conexão com o servidor.
      */
     public BrCacheConnectionImp(String host, int port) throws CacheException{
         this(host, port, new DefaultStreamFactory());
@@ -99,7 +99,7 @@ class BrCacheConnectionImp implements BrCacheConnection{
      * Cria uma nova instância de {@link BrCacheConnection}
      * @param host Endereço do servidor.
      * @param port Porta que o servidor está escutando.
-     * @throws CacheException 
+     * @throws CacheException Lançada se não for possível a conexão com o servidor.
      */
     public BrCacheConnectionImp(String host, int port, StreamFactory streamFactory) throws CacheException{
         this.host 			= host;
@@ -113,7 +113,6 @@ class BrCacheConnectionImp implements BrCacheConnection{
 	        this.socket     = new Socket(this.getHost(), this.getPort());
 	        this.sender     = new BRCacheSender(socket, streamFactory, 8*1024);
 	        this.receiver   = new BRCacheReceiver(socket, streamFactory, 8*1024);
-	        this.autocommit = true;
 	        this.closed     = false;
     	}
     	catch(Throwable e){
@@ -287,6 +286,18 @@ class BrCacheConnectionImp implements BrCacheConnection{
     public void setAutoCommit(boolean value) throws CacheException{
 
     	try{
+    		this.sender.executeSetVar("auto_commit", value);
+    		this.receiver.processSetVarResult();
+    	}
+    	catch(CacheException e){
+    		throw e;
+    	}
+    	catch(Throwable e){
+    		throw new CacheException(e);
+    	}
+    	
+    	/*
+    	try{
 	    	if(value){
 	    		this.sender.executeCommitTransaction();
 	    		this.receiver.processCommitTransactionResult();
@@ -304,11 +315,21 @@ class BrCacheConnectionImp implements BrCacheConnection{
     	catch(Throwable e){
     		throw new CacheException(e);
     	}
-    	
+    	*/
     }
     
     public boolean isAutoCommit() throws CacheException{
-    	return this.autocommit;
+    	try{
+    		this.sender.executeShowVar("auto_commit");
+    		String var = this.receiver.processShowVarResult("auto_commit");
+    		return var.equals("true");
+    	}
+    	catch(CacheException e){
+    		throw e;
+    	}
+    	catch(Throwable e){
+    		throw new CacheException(e);
+    	}
     }
     
     public void commit() throws CacheException{

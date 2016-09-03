@@ -54,7 +54,7 @@ public interface BrCacheConnection {
      * @param value valor para ser associado à chave.
      * @param maxAliveTime tempo máximo de vida do valor no cache.
      * @return o valor anterior associado à chave.
-     * @throws CacheException Lançada se ocorrer alguma falha ao tentar inserir o item.
+     * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
      */
 	boolean replace(
 			String key, Object value, long timeToLive, long timeToIdle) throws CacheException;
@@ -66,7 +66,7 @@ public interface BrCacheConnection {
 	 * @param newValue valor para ser associado à chave.
 	 * @param maxAliveTime tempo máximo de vida do valor no cache.
 	 * @return <code>true</code> se o valor for substituido. Caso contrário, <code>false</code>.
-     * @throws CacheException Lançada se ocorrer alguma falha ao tentar inserir o item.
+     * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
 	boolean replace(
 			String key, Object oldValue, 
@@ -78,7 +78,7 @@ public interface BrCacheConnection {
 	 * @param value valor para ser associado à chave.
 	 * @param maxAliveTime tempo máximo de vida do valor no cache.
 	 * @return valor anterior associado à chave.
-     * @throws CacheException Lançada se ocorrer alguma falha ao tentar inserir o item.
+     * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
 	Object putIfAbsent(
 			String key, Object value, long timeToLive, long timeToIdle) throws CacheException;
@@ -90,7 +90,7 @@ public interface BrCacheConnection {
 	 * @param timeToLive é a quantidade máxima de tempo que um item expira após sua criação.
 	 * @param timeToIdle é a quantidade máxima de tempo que um item expira após o último acesso.
      * @return <code>true</code> se o item for substituido. Caso contrário, <code>false</code>
-     * @throws CacheException Lançada se ocorrer alguma falha ao tentar inserir o item.
+     * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
     boolean put(String key, Object value, long timeToLive, long timeToIdle) throws CacheException;
     
@@ -100,8 +100,7 @@ public interface BrCacheConnection {
      * @param key chave associada ao valor.
      * @param forUpdate <code>true</code> para bloquear o item. Caso contrário <code>false</code>.
      * @return valor associado à chave ou <code>null</code>.
-     * @throws CacheException Lançada se ocorrer alguma falha ao tentar obter o
-     * item.
+     * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
     Object get(String key, boolean forUpdate) throws CacheException;
 
@@ -110,8 +109,7 @@ public interface BrCacheConnection {
      * seu acesso as demais transações.
      * @param key chave associada ao valor.
      * @return valor associado à chave ou <code>null</code>.
-     * @throws CacheException Lançada se ocorrer alguma falha ao tentar obter o
-     * item.
+     * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
     Object get(String key) throws CacheException;
     
@@ -122,8 +120,7 @@ public interface BrCacheConnection {
 	 * @param key chave associada ao valor.
 	 * @return valor para ser associado à chave.
 	 * @return <code>true</code> se o valor for removido. Caso contrário, <code>false</code>.
-	 * @throws CacheException Lançada se ocorrer alguma falha ao tentar remover o
-     * item.
+     * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
 	boolean remove(
 			String key, Object value) throws CacheException;
@@ -132,8 +129,7 @@ public interface BrCacheConnection {
 	 * Remove o valor associado à chave.
 	 * @param key chave associada ao valor.
 	 * @return <code>true</code> se o valor for removido. Caso contrário, <code>false</code>.
-	 * @throws CacheException Lançada se ocorrer alguma falha ao tentar remover o
-     * item.
+     * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
     boolean remove(String key) throws CacheException;
     

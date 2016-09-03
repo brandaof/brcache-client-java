@@ -188,7 +188,26 @@ class BRCacheReceiver {
 		
 	}
 
-	public String processDefaultTransactionCommandResult() throws IOException, CacheException{
+	public String processShowVarResult(String var) throws IOException, CacheException{
+		
+		/*
+		 * ok | <error>
+		 */
+		byte[] result   = this.getLine();
+		byte[] var_name = var.getBytes(BrCacheConnectionImp.ENCODE);
+		
+		if(!ArraysUtil.startsWith(var_name, result)){
+			byte[][] parts = ArraysUtil.split(result, 0, (byte)' ');
+			return new String(parts[1]);
+		}
+		else{
+			Error err = this.parseError(result);
+			throw new CacheException(err.code, err.message);
+		}
+		
+	}
+
+	public void processSetVarResult() throws IOException, CacheException{
 		
 		/*
 		 * ok | <error>
