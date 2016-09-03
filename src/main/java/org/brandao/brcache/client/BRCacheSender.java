@@ -185,6 +185,21 @@ class BRCacheSender {
 		out.flush();
 	}
 	
+	public void executeShowVar(String var) throws IOException{
+		
+		/*
+			show_var <var_name>\r\n
+		 */
+		
+		out.write(BrCacheConnectionImp.SHOW_VAR);	
+		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
+		
+		out.write(var.getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(BrCacheConnectionImp.CRLF_DTA);
+		
+		out.flush();
+	}
+	
 	private byte[] toBytes(Object value) throws IOException{
 		
         ObjectOutputStream out     = null;

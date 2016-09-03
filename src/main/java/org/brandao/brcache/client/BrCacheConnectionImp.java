@@ -31,6 +31,10 @@ class BrCacheConnectionImp implements BrCacheConnection{
 
     public static final byte[] DEFAULT_FLAGS_DTA         = "0".getBytes();
     
+    public static final byte[] SHOW_VAR                  = "show_var".getBytes();
+    
+    public static final byte[] SHOW_VARS                 = "show_vars".getBytes();
+    
     public static final byte[] BOUNDARY_DTA              = "end".getBytes();
     
     public static final byte[] PUT_COMMAND_DTA           = "put".getBytes();

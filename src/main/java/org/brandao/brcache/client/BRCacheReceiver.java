@@ -188,6 +188,20 @@ class BRCacheReceiver {
 		
 	}
 
+	public String processDefaultTransactionCommandResult() throws IOException, CacheException{
+		
+		/*
+		 * ok | <error>
+		 */
+		byte[] result = this.getLine();
+
+		if(!Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, result)){
+			Error err = this.parseError(result);
+			throw new CacheException(err.code, err.message);
+		}
+		
+	}
+	
 	private Object toObject(byte[] data) throws ClassNotFoundException, IOException{
 		ByteArrayInputStream in = new ByteArrayInputStream(data);
 		ObjectInputStream bin = new ObjectInputStream(in);
