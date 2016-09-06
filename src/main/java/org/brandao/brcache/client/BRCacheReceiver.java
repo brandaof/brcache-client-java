@@ -161,6 +161,27 @@ class BRCacheReceiver {
 		}
 		
 	}
+
+	public boolean processSetResult() throws IOException, CacheException{
+		
+		/*
+		 * stored | not_stored | <error>
+		 */
+		byte[] result = this.getLine();
+
+		if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA, result)){
+			return true;
+		}
+		else
+		if(Arrays.equals(BrCacheConnectionImp.NOT_STORED_DTA, result)){
+			return false;
+		}
+		else{
+			Error err = this.parseError(result);
+			throw new CacheException(err.code, err.message);
+		}
+		
+	}
 	
 	public void processBeginTransactionResult() throws IOException, CacheException{
 		this.processDefaultTransactionCommandResult();

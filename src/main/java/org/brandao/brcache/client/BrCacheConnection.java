@@ -82,6 +82,17 @@ public interface BrCacheConnection {
 	 */
 	Object putIfAbsent(
 			String key, Object value, long timeToLive, long timeToIdle) throws CacheException;
+
+	/**
+	 * Associa o valor a chave somente se a chave não estiver associada a um valor.
+	 * @param key chave associada ao valor.
+	 * @param value valor para ser associado à chave.
+	 * @param maxAliveTime tempo máximo de vida do valor no cache.
+	 * @return <code>true</code> se o valor for substituído. Caso contrário, <code>false</code>.
+     * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
+	 */
+	boolean set(
+			String key, Object value, long timeToLive, long timeToIdle) throws CacheException;
 	
 	/**
 	 * Associa o valor à chave.

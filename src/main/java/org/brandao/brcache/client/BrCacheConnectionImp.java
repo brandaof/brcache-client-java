@@ -43,6 +43,8 @@ class BrCacheConnectionImp implements BrCacheConnection{
 
     public static final byte[] REPLACE_COMMAND_DTA       = "replace".getBytes();
 
+    public static final byte[] SET_COMMAND_DTA           = "set".getBytes();
+    
     public static final byte[] GET_COMMAND_DTA           = "get".getBytes();
 
     public static final byte[] REMOVE_COMMAND_DTA        = "remove".getBytes();
@@ -192,10 +194,7 @@ class BrCacheConnectionImp implements BrCacheConnection{
 		try{
 			localTransaction = this.startLocalTransaction();
 			Object o = this.get(key, true);
-			if(o == null){
-				this.put(key, value, timeToLive, timeToIdle);
-			}
-			
+			this.set(key, value, timeToLive, timeToIdle);
 			this.commitLocalTransaction(localTransaction);
 			return o;
 		}
@@ -221,6 +220,22 @@ class BrCacheConnectionImp implements BrCacheConnection{
         
     }
 
+    public boolean set(String key, Object value, long timeToLive, long timeToIdle) 
+            throws CacheException {
+
+    	try{
+	    	this.sender.executeSet(key, timeToLive, timeToIdle, value);
+	        return this.receiver.processSetResult();
+    	}
+		catch(CacheException e){
+			throw e;
+		}
+    	catch(Throwable e){
+    		throw new CacheException(e);
+    	}
+        
+    }
+    
 	/* métodos de coleta*/
     
     public Object get(String key, boolean forUpdate) throws CacheException{
