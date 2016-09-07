@@ -18,7 +18,6 @@
 package org.brandao.brcache.client;
 
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -39,22 +38,12 @@ public class BufferedInputStream extends InputStream{
     
     private InputStream stream;
 
-    private byte[] result;
-    
-    private int offsetResult;
-    
     public BufferedInputStream(int capacity, InputStream stream){
         this.offset   = 0;
         this.limit    = 0;
         this.buffer   = new byte[capacity];
         this.capacity = capacity;
         this.stream   = stream;
-        this.result   = null;
-    }
-
-    public String readLine() throws IOException{
-        byte[] data = readLineInBytes();
-        return data == null? null : new String(data);
     }
 
     public int read() throws IOException{
@@ -161,9 +150,9 @@ public class BufferedInputStream extends InputStream{
     	
     }
     
-    public byte[] readLineInBytes() throws IOException{
+    public byte[] readLine() throws IOException{
     	
-    	ByteArrayOutputStream bout = new ByteArrayOutputStream(12);
+    	ByteArrayOutputStream bout = new ByteArrayOutputStream(1024);
     	int startOff  = this.offset;
     	
     	for(;;){
@@ -193,110 +182,6 @@ public class BufferedInputStream extends InputStream{
             
     	}
     	
-    }
-    
-    /*
-    public byte[] readLineInBytes() throws IOException{
-    	
-        this.result = new byte[0];
-        this.offsetResult = 0;
-        int start = this.offset;
-        
-        while(true){
-
-            if(this.offset == this.limit){
-                
-                if(this.limit == this.capacity){
-                    
-                    if(start < this.limit){
-                        this.updateResult(this.buffer, start, this.offset - start - 1);
-                        this.buffer[0] = this.buffer[this.buffer.length - 1];
-                        this.offset = 1;
-                        this.limit  = 1;
-                    }
-                    else{
-                        this.offset = 0;
-                        this.limit  = 0;
-                    }
-                    
-                    start  = 0;
-                }
-                
-                int len = stream.read(this.buffer, this.limit, this.buffer.length - limit);
-                
-                if(len == -1)
-                    throw new EOFException("premature end of data");
-                
-                this.limit += len;
-            }
-            
-            if(this.offset == this.buffer.length){
-                this.updateResult(this.buffer, start, this.offset - start - 1);
-                this.hasLineFeed = false;
-                this.offset = 1;
-                this.limit  = 1;
-                this.buffer[0] = this.buffer[this.buffer.length - 1];
-                return this.result;
-            }
-            else
-            if(this.offset > 0 && this.buffer[this.offset] == '\n'){
-            	
-            	if(start == this.offset || this.buffer[this.offset-1] != '\r'){
-                    this.offset++;
-                    throw new IOException("expected \\r");
-            	}
-            	
-                this.updateResult(this.buffer, start, this.offset - start - 1);
-                this.hasLineFeed = true;
-                this.offset++;
-                return this.result;
-            }
-            else{
-                this.offset++;
-            }
-        }
-    }
-    */
-    
-    public byte[] readLineInBytes(int totalRead) throws IOException{
-    	
-        this.result = new byte[totalRead];
-        this.offsetResult = 0;
-        
-        int remainingToMaxRead = totalRead;
-        int read;
-        
-        while(remainingToMaxRead > 0){
-
-            if(this.offset == this.limit){
-                
-                if(this.limit == this.capacity){
-                    this.offset = 0;
-                    this.limit  = 0;
-                }
-                
-                int len = stream.read(this.buffer, this.limit, this.buffer.length - limit);
-                
-                if(len == -1)
-                    throw new EOFException("premature end of data");
-                
-                this.limit += len;
-            }
-            
-            int maxRead = this.limit - this.offset;
-            if(remainingToMaxRead > maxRead)
-            	read = maxRead;
-            else
-            	read = remainingToMaxRead;
-            
-            System.arraycopy(this.buffer, this.offset, this.result, this.offsetResult, read);
-            this.offsetResult += read;
-        	//this.updateResult(this.buffer, this.offset, read);
-            this.offset += read;
-            remainingToMaxRead -= read;
-        }
-        
-        return this.result;
     }
     
     public void clear(){

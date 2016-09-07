@@ -8,34 +8,12 @@ import java.net.Socket;
 
 class BRCacheSender {
 
-/*
-    public static final String CRLF                      = "\r\n";
-    
-    public static final String BOUNDARY                  = "END";
-    
-    public static final String PUT_COMMAND               = "put";
-
-    public static final String ERROR                     = "ERROR";
-    
-    public static final String GET_COMMAND               = "get";
-    
-    public static final String REMOVE_COMMAND            = "remove";
-
-    public static final String VALUE_RESULT              = "VALUE";
-    
-    public static final String SUCCESS                   = "OK";
-
-    public static final String SEPARATOR_COMMAND         = " ";
- 
- */
     private OutputStream out;
     
     public BRCacheSender(Socket socket, StreamFactory streamFactory, 
     		int bufferLength) throws IOException{
     	this.out = 
     			new BufferedOutputStream(bufferLength, streamFactory.createOutputStream(socket));
-    			/*new BufferedOutputStream(
-    					streamFactory.createOutputStream(socket), bufferLength);*/
     }
     
 	public void executePut(String key, long timeToLive, long timeToIdle, Object value) throws IOException {
@@ -264,7 +242,7 @@ class BRCacheSender {
     	ByteArrayOutputStream bout = null;
     	
         try{
-            bout = new ByteArrayOutputStream(1024);
+            bout = new ByteArrayOutputStream(9048);
             out = new ObjectOutputStream(bout);
             out.writeObject(value);
             out.flush();
