@@ -209,8 +209,8 @@ class BrCacheConnectionImp implements BrCacheConnection{
 
     	try{
 	    	this.sender.executePut(key, timeToLive, timeToIdle, value);
-	        //return this.receiver.processPutResult();
-    		return true;
+	        return this.receiver.processPutResult();
+    		//return true;
     	}
 		//catch(CacheException e){
 		//	throw e;

@@ -242,7 +242,7 @@ class BRCacheSender {
     	ByteArrayOutputStream bout = null;
     	
         try{
-            bout = new ByteArrayOutputStream(9048);
+            bout = new ByteArrayOutputStream(1024);
             out = new ObjectOutputStream(bout);
             out.writeObject(value);
             out.flush();

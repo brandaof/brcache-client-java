@@ -152,7 +152,7 @@ public class BufferedInputStream extends InputStream{
     
     public byte[] readLine() throws IOException{
     	
-    	ByteArrayOutputStream bout = new ByteArrayOutputStream(1024);
+    	ByteArrayOutputStream bout = new ByteArrayOutputStream(2048);
     	int startOff  = this.offset;
     	
     	for(;;){
@@ -167,9 +167,9 @@ public class BufferedInputStream extends InputStream{
             	bout.write(this.buffer, startOff, this.offset - startOff);
             	byte[] array = bout.toByteArray();
             	
-            	if(array.length > 0){ 
-            		if(array[array.length-1] == '\r'){
-                    	return Arrays.copyOf(array, array.length - 1);
+            	if(array.length > 1){ 
+            		if(array[array.length-2] == '\r'){
+            			return Arrays.copyOf(array, array.length - 2);
             		}
             		else{
                         throw new IOException("expected \\r");
