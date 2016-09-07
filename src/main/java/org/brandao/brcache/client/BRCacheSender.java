@@ -1,9 +1,9 @@
 package org.brandao.brcache.client;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 class BRCacheSender {
@@ -28,13 +28,14 @@ class BRCacheSender {
     public static final String SEPARATOR_COMMAND         = " ";
  
  */
-    private BufferedOutputStream out;
+    private OutputStream out;
     
     public BRCacheSender(Socket socket, StreamFactory streamFactory, 
     		int bufferLength) throws IOException{
     	this.out = 
-    			new BufferedOutputStream(
-    					streamFactory.createOutputStream(socket), bufferLength);
+    			new BufferedOutputStream(bufferLength, streamFactory.createOutputStream(socket));
+    			/*new BufferedOutputStream(
+    					streamFactory.createOutputStream(socket), bufferLength);*/
     }
     
 	public void executePut(String key, long timeToLive, long timeToIdle, Object value) throws IOException {
@@ -263,7 +264,7 @@ class BRCacheSender {
     	ByteArrayOutputStream bout = null;
     	
         try{
-            bout = new ByteArrayOutputStream();
+            bout = new ByteArrayOutputStream(1024);
             out = new ObjectOutputStream(bout);
             out.writeObject(value);
             out.flush();

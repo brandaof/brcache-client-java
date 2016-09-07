@@ -1,8 +1,8 @@
 package org.brandao.brcache.client;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.Arrays;
@@ -11,13 +11,12 @@ import java.util.Map;
 
 class BRCacheReceiver {
 
-    private BufferedInputStream in;
+    private InputStream in;
 	
 	public BRCacheReceiver(Socket socket, StreamFactory streamFactory, 
     		int bufferLength) throws IOException{
-    	this.in = 
-    			new BufferedInputStream(
-    					streamFactory.createInpuStream(socket), bufferLength);
+    	this.in =
+    			new BufferedInputStream(bufferLength, streamFactory.createInpuStream(socket));
 	}
 
 	public boolean processPutResult() throws IOException, CacheException{
@@ -268,10 +267,12 @@ class BRCacheReceiver {
 	
 		if(c == '\n'){
 			this.in.reset();
-			byte[] buf = new byte[i + 1];
+			byte[] buf = new byte[i - 1];
+			byte[] end = new byte[2];
 			this.in.read(buf, 0, buf.length);
-			//return new String(buf, 0, buf.length - 2);
-			return Arrays.copyOf(buf, buf.length - 2);
+			this.in.read(end, 0, end.length);
+			//return Arrays.copyOf(buf, buf.length - 2);
+			return buf;
 		}
 		else{
 			throw new IOException("premature end of data");
