@@ -113,8 +113,8 @@ class BrCacheConnectionImp implements BrCacheConnection{
     public void connect() throws CacheException{
     	try{
 	        this.socket     = new Socket(this.getHost(), this.getPort());
-	        this.sender     = new BRCacheSender(socket, streamFactory, 16*1024);
-	        this.receiver   = new BRCacheReceiver(socket, streamFactory, 16*1024);
+	        this.sender     = new BRCacheSender(socket, streamFactory, 9*1024);
+	        this.receiver   = new BRCacheReceiver(socket, streamFactory, 9*1024);
 	        this.closed     = false;
     	}
     	catch(Throwable e){
