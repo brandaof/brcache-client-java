@@ -37,7 +37,6 @@ class BRCacheReceiver {
 			Error err = this.parseError(result);
 			throw new CacheException(err.code, err.message);
 		}
-		
 	}
 
 	public boolean processReplaceResult() throws IOException, CacheException{
