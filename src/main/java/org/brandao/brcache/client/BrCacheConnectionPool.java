@@ -18,7 +18,6 @@
 package org.brandao.brcache.client;
 
 import java.io.IOException;
-import java.lang.reflect.Proxy;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -92,11 +91,13 @@ public class BrCacheConnectionPool {
     private BrCacheConnection createConnection(String host, int port, StreamFactory streamFactory) throws CacheException{
         BrCacheConnectionImp con = new BrCacheConnectionImp(host, port, streamFactory);
         con.connect();
-        return 
+        return new BrCacheConnectionProxy(con, this);
+        /*
             (BrCacheConnection)Proxy.newProxyInstance(
                 getClass().getClassLoader(), 
                 new Class[]{BrCacheConnection.class}, 
                 new BrConnectionInvocationHandler(this, con));
+        */
     }
     
     /**

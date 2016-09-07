@@ -237,7 +237,6 @@ class BRCacheSender {
 	}
 	
 	private byte[] toBytes(Object value) throws IOException{
-		
         ObjectOutputStream out     = null;
     	ByteArrayOutputStream bout = null;
     	

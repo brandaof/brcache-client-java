@@ -71,21 +71,21 @@ class BrCacheConnectionImp implements BrCacheConnection{
     
     public static final byte[] SEPARATOR_COMMAND_DTA     = " ".getBytes();
 
-    public static final String ENCODE                   = "UTF-8";
+    public static final String ENCODE                    = "UTF-8";
     
-    private String host;
+    protected String host;
     
-    private int port;
+    protected int port;
     
-    private Socket socket;
+    protected Socket socket;
     
-    private StreamFactory streamFactory;
+    protected StreamFactory streamFactory;
     
-    private BRCacheSender sender;
+    protected BRCacheSender sender;
 
-    private BRCacheReceiver receiver;
+    protected BRCacheReceiver receiver;
     
-    private boolean closed;
+    protected boolean closed;
     
     /**
      * Cria uma nova instância de {@link BrCacheConnection}
@@ -209,8 +209,8 @@ class BrCacheConnectionImp implements BrCacheConnection{
 
     	try{
 	    	this.sender.executePut(key, timeToLive, timeToIdle, value);
-	        return this.receiver.processPutResult();
-    		//return true;
+	        //return this.receiver.processPutResult();
+    		return true;
     	}
 		//catch(CacheException e){
 		//	throw e;
