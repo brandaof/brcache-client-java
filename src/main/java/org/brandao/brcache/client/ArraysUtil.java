@@ -231,7 +231,26 @@ public class ArraysUtil {
 		}
 
 		return i > 0? Arrays.copyOfRange(r, i, r.length) : r;
-	}	
+	}
+	
+	/**
+	 * Converte uma string em um arranjo de bytes.
+	 * 
+	 * @param value valor. 
+	 * @return arranjo de bytes.
+	 */
+	public static byte[] toBytes(String value){
+		
+		char[] chars = value.toCharArray();
+		byte[] bytes = new byte[chars.length];
+		
+		for(int i=0;i<chars.length;i++){
+			bytes[i] = (byte)chars[i];
+		}
+		
+		return bytes;
+	}
+	
 	/**
 	 * Converte um texto representado por um arranjo de bytes em um inteiro.
 	 * @param value arranjo.

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Random;
 
 class BRCacheSender {
 
@@ -15,7 +16,7 @@ class BRCacheSender {
 					BrCacheConnectionImp.PUT_COMMAND_DTA,
 					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
 					
-					new byte[]{'a','a','a'},//key.getBytes(BrCacheConnectionImp.ENCODE),
+					new byte[]{'a','a','a'},
 					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
 
 					ArraysUtil.toBytes(0),
@@ -62,21 +63,15 @@ class BRCacheSender {
 			 end\r\n 
 		 */
 
-		long start = System.currentTimeMillis();
-		out.write(buffer);
-		long end    = System.currentTimeMillis();
-		long time   = end - start;
-		System.out.println("time: " + time);
-		
-		//byte[] data = this.toBytes(value);
-		
 		/*
+		byte[] data = this.toBytes(value);
+		
 		byte[] prefix =
 				ArraysUtil.concat(new byte[][]{
 						BrCacheConnectionImp.PUT_COMMAND_DTA,
 						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
 						
-						new byte[]{'a','a','a'},//key.getBytes(BrCacheConnectionImp.ENCODE),
+						key.getBytes(BrCacheConnectionImp.ENCODE),
 						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
 
 						ArraysUtil.toBytes(timeToLive),
@@ -105,9 +100,7 @@ class BRCacheSender {
 				});
 		
 		out.write(suffix, 0, suffix.length);
-		*/
 		
-		/*
 		byte[] buffer =
 				ArraysUtil.concat(new byte[][]{
 						prefix,
@@ -116,13 +109,16 @@ class BRCacheSender {
 				});
 		
 		out.write(buffer);
+		
+		out.flush();
 		*/
 		
-		/*
+		byte[] data = this.toBytes(value);
+		
 		out.write(BrCacheConnectionImp.PUT_COMMAND_DTA);
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 		
-		out.write(key.getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(ArraysUtil.toBytes(key));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 
 		out.write(ArraysUtil.toBytes(timeToLive));
@@ -145,7 +141,7 @@ class BRCacheSender {
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		
 		out.flush();
-		*/
+		
 	}
 	
 	public void executeReplace(String key, long timeToLive, long timeToIdle, Object value) throws IOException {
@@ -336,7 +332,7 @@ class BRCacheSender {
     	ByteArrayOutputStream bout = null;
     	
         try{
-            bout = new ByteArrayOutputStream(1024);
+            bout = new ByteArrayOutputStream(128);
             out = new ObjectOutputStream(bout);
             out.writeObject(value);
             out.flush();
