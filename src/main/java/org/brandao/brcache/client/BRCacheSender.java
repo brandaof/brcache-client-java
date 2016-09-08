@@ -10,6 +10,42 @@ class BRCacheSender {
 
 	private byte[] data = new byte[65536];
 	
+	byte[] prefix =
+			ArraysUtil.concat(new byte[][]{
+					BrCacheConnectionImp.PUT_COMMAND_DTA,
+					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+					
+					new byte[]{'a','a','a'},//key.getBytes(BrCacheConnectionImp.ENCODE),
+					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+
+					ArraysUtil.toBytes(0),
+					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+
+					ArraysUtil.toBytes(0),
+					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+					
+					ArraysUtil.toBytes(data.length),
+					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+					
+					BrCacheConnectionImp.DEFAULT_FLAGS_DTA,
+					BrCacheConnectionImp.CRLF_DTA
+			});
+	
+	byte[] suffix =
+			ArraysUtil.concat(new byte[][]{
+					BrCacheConnectionImp.CRLF_DTA,
+					
+					BrCacheConnectionImp.BOUNDARY_DTA,
+					BrCacheConnectionImp.CRLF_DTA
+			});
+	
+	byte[] buffer =
+			ArraysUtil.concat(new byte[][]{
+					prefix,
+					data,
+					suffix
+			});
+	
     private OutputStream out;
     
     public BRCacheSender(Socket socket, StreamFactory streamFactory, 
@@ -26,8 +62,63 @@ class BRCacheSender {
 			 end\r\n 
 		 */
 
+		long start = System.currentTimeMillis();
+		out.write(buffer);
+		long end    = System.currentTimeMillis();
+		long time   = end - start;
+		System.out.println("time: " + time);
+		
 		//byte[] data = this.toBytes(value);
 		
+		/*
+		byte[] prefix =
+				ArraysUtil.concat(new byte[][]{
+						BrCacheConnectionImp.PUT_COMMAND_DTA,
+						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+						
+						new byte[]{'a','a','a'},//key.getBytes(BrCacheConnectionImp.ENCODE),
+						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+
+						ArraysUtil.toBytes(timeToLive),
+						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+
+						ArraysUtil.toBytes(timeToIdle),
+						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+						
+						ArraysUtil.toBytes(data.length),
+						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
+						
+						BrCacheConnectionImp.DEFAULT_FLAGS_DTA,
+						BrCacheConnectionImp.CRLF_DTA
+				});
+
+		out.write(prefix, 0, prefix.length);
+		
+		out.write(data, 0, data.length);
+		
+		byte[] suffix =
+				ArraysUtil.concat(new byte[][]{
+						BrCacheConnectionImp.CRLF_DTA,
+						
+						BrCacheConnectionImp.BOUNDARY_DTA,
+						BrCacheConnectionImp.CRLF_DTA
+				});
+		
+		out.write(suffix, 0, suffix.length);
+		*/
+		
+		/*
+		byte[] buffer =
+				ArraysUtil.concat(new byte[][]{
+						prefix,
+						data,
+						suffix
+				});
+		
+		out.write(buffer);
+		*/
+		
+		/*
 		out.write(BrCacheConnectionImp.PUT_COMMAND_DTA);
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 		
@@ -54,6 +145,7 @@ class BRCacheSender {
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		
 		out.flush();
+		*/
 	}
 	
 	public void executeReplace(String key, long timeToLive, long timeToIdle, Object value) throws IOException {

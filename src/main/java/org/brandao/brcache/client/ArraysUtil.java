@@ -275,6 +275,25 @@ public class ArraysUtil {
 		return new String(chars);
 	}
 	
+	public static byte[] concat(byte[][] value){
+		
+		int size = 0;
+		
+		for(byte[] dta: value){
+			size += dta.length;
+		}
+		
+		byte[] result = new byte[size];
+		int index = 0;
+		
+		for(byte[] dta: value){
+			System.arraycopy(dta, 0, result, index, dta.length);
+			index += dta.length;
+		}
+		
+		return result;
+	}
+	
 	private static byte[] copy(byte[] origin, int start, int end){
 		int len = end-start;
 		byte[] item = new byte[end-start];
