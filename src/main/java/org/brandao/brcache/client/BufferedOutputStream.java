@@ -56,6 +56,13 @@ public class BufferedOutputStream extends OutputStream{
     }
     
     public void write(byte[] buffer, int offset, int len) throws IOException{
+    	
+    	if(len > 1024){
+    		this.flush();
+    		this.out.write(buffer, offset, len);
+    		return;
+    	}
+    	
         int limitOffset  = offset + len;
         
         if(this.offset == this.capacity)

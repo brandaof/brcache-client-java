@@ -8,6 +8,8 @@ import java.net.Socket;
 
 class BRCacheSender {
 
+	private byte[] data = new byte[65536];
+	
     private OutputStream out;
     
     public BRCacheSender(Socket socket, StreamFactory streamFactory, 
@@ -24,7 +26,7 @@ class BRCacheSender {
 			 end\r\n 
 		 */
 
-		byte[] data = this.toBytes(value);
+		//byte[] data = this.toBytes(value);
 		
 		out.write(BrCacheConnectionImp.PUT_COMMAND_DTA);
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
@@ -32,19 +34,20 @@ class BRCacheSender {
 		out.write(key.getBytes(BrCacheConnectionImp.ENCODE));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 
-		out.write(Long.toString(timeToLive).getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(ArraysUtil.toBytes(timeToLive));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 
-		out.write(Long.toString(timeToIdle).getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(ArraysUtil.toBytes(timeToIdle));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 		
-		out.write(Integer.toString(data.length).getBytes(BrCacheConnectionImp.ENCODE));
+		out.write(ArraysUtil.toBytes(data.length));
 		out.write(BrCacheConnectionImp.SEPARATOR_COMMAND_DTA);
 		
 		out.write(BrCacheConnectionImp.DEFAULT_FLAGS_DTA);
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		
 		out.write(data, 0, data.length);
+		
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		
 		out.write(BrCacheConnectionImp.BOUNDARY_DTA);
