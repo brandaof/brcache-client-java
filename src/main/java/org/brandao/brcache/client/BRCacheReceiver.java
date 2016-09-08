@@ -23,7 +23,7 @@ class BRCacheReceiver {
 		/*
 		 * stored | replaced | <error>
 		 */
-		
+
 		byte[] result = this.getLine();
 		
 		if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA, result)){
