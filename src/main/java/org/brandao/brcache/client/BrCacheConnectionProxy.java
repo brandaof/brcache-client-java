@@ -16,8 +16,10 @@ class BrCacheConnectionProxy implements BrCacheConnection{
 	}
 
 	public void close() throws CacheException {
-		this.pool.release(con);
-		this.closed = true;
+		if(!this.closed){
+			this.pool.release(con);
+			this.closed = true;
+		}
 	}
 
 	public boolean isClosed() {
@@ -94,5 +96,12 @@ class BrCacheConnectionProxy implements BrCacheConnection{
 		return this.con.getPort();
 	}
 
-
+	public void finalize() throws Throwable{
+		try{
+			this.close();
+		}
+		finally{
+			super.finalize();
+		}
+	}
 }

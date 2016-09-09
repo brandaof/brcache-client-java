@@ -5,47 +5,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Random;
 
 class BRCacheSender {
-
-	private byte[] data = new byte[65536];
-	
-	byte[] prefix =
-			ArraysUtil.concat(new byte[][]{
-					BrCacheConnectionImp.PUT_COMMAND_DTA,
-					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-					
-					new byte[]{'a','a','a'},
-					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-
-					ArraysUtil.toBytes(0),
-					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-
-					ArraysUtil.toBytes(0),
-					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-					
-					ArraysUtil.toBytes(data.length),
-					BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-					
-					BrCacheConnectionImp.DEFAULT_FLAGS_DTA,
-					BrCacheConnectionImp.CRLF_DTA
-			});
-	
-	byte[] suffix =
-			ArraysUtil.concat(new byte[][]{
-					BrCacheConnectionImp.CRLF_DTA,
-					
-					BrCacheConnectionImp.BOUNDARY_DTA,
-					BrCacheConnectionImp.CRLF_DTA
-			});
-	
-	byte[] buffer =
-			ArraysUtil.concat(new byte[][]{
-					prefix,
-					data,
-					suffix
-			});
 	
     private OutputStream out;
     
@@ -62,56 +23,6 @@ class BRCacheSender {
 			 <data>\r\n
 			 end\r\n 
 		 */
-
-		/*
-		byte[] data = this.toBytes(value);
-		
-		byte[] prefix =
-				ArraysUtil.concat(new byte[][]{
-						BrCacheConnectionImp.PUT_COMMAND_DTA,
-						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-						
-						key.getBytes(BrCacheConnectionImp.ENCODE),
-						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-
-						ArraysUtil.toBytes(timeToLive),
-						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-
-						ArraysUtil.toBytes(timeToIdle),
-						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-						
-						ArraysUtil.toBytes(data.length),
-						BrCacheConnectionImp.SEPARATOR_COMMAND_DTA,
-						
-						BrCacheConnectionImp.DEFAULT_FLAGS_DTA,
-						BrCacheConnectionImp.CRLF_DTA
-				});
-
-		out.write(prefix, 0, prefix.length);
-		
-		out.write(data, 0, data.length);
-		
-		byte[] suffix =
-				ArraysUtil.concat(new byte[][]{
-						BrCacheConnectionImp.CRLF_DTA,
-						
-						BrCacheConnectionImp.BOUNDARY_DTA,
-						BrCacheConnectionImp.CRLF_DTA
-				});
-		
-		out.write(suffix, 0, suffix.length);
-		
-		byte[] buffer =
-				ArraysUtil.concat(new byte[][]{
-						prefix,
-						data,
-						suffix
-				});
-		
-		out.write(buffer);
-		
-		out.flush();
-		*/
 		
 		byte[] data = this.toBytes(value);
 		
@@ -332,7 +243,7 @@ class BRCacheSender {
     	ByteArrayOutputStream bout = null;
     	
         try{
-            bout = new ByteArrayOutputStream(128);
+            bout = new ByteArrayOutputStream();
             out = new ObjectOutputStream(bout);
             out.writeObject(value);
             out.flush();
