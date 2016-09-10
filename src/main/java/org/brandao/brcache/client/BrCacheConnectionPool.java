@@ -172,7 +172,7 @@ public class BrCacheConnectionPool {
 	        	if(!con.isAutoCommit()){
 	        		con.rollback();
 	        	}
-	            this.instances.put(con);
+	            this.instances.put(new BrCacheConnectionProxy(con, this));
 	        }
 	        catch(Throwable e){
 	        	e.printStackTrace();
@@ -185,20 +185,20 @@ public class BrCacheConnectionPool {
      * Remove a conexão do pool e libera o espaço para ser criada uma nova.
      * @param con Conexão.
      */
-    synchronized void shutdown(BrCacheConnection con){
+    void shutdown(BrCacheConnection con){
     	synchronized(this){
-        	try{
-        		con.close();
-        	}
-        	catch(Throwable ex){
-        		ex.printStackTrace();
-        	}
-    		
-	        if(this.instances.remove(con)){
-	        	this.createdInstances--;
-	        }
+	    	try{
+	    		con.close();
+	    	}
+	    	catch(Throwable ex){
+	    		ex.printStackTrace();
+	    	}
+	    	finally{
+		        if(this.instances.remove(con)){
+		        	this.createdInstances--;
+		        }
+	    	}
     	}
-    	
     }
 
     /**

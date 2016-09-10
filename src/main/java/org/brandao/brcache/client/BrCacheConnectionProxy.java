@@ -10,8 +10,8 @@ class BrCacheConnectionProxy implements BrCacheConnection{
 	
 	public BrCacheConnectionProxy(BrCacheConnection con, 
 			BrCacheConnectionPool pool) throws CacheException {
-		this.pool = pool;
-		this.con  = con;
+		this.pool   = pool;
+		this.con    = con;
 		this.closed = false;
 	}
 
@@ -96,7 +96,7 @@ class BrCacheConnectionProxy implements BrCacheConnection{
 		return this.con.getPort();
 	}
 
-	public void finalize() throws Throwable{
+    protected void finalize() throws Throwable {
 		try{
 			this.close();
 		}
