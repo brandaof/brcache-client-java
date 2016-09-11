@@ -114,8 +114,8 @@ class BrCacheConnectionImp implements BrCacheConnection{
     	try{
 	        this.socket     = new Socket(this.getHost(), this.getPort());
 	        this.socket.setTcpNoDelay(true);
-	        this.sender     = new BRCacheSender(socket, streamFactory, 16*1024);
-	        this.receiver   = new BRCacheReceiver(socket, streamFactory, 16*1024);
+	        this.sender     = new BRCacheSender(socket, streamFactory, 8*1024);
+	        this.receiver   = new BRCacheReceiver(socket, streamFactory, 8*1024);
 	        this.closed     = false;
     	}
     	catch(Throwable e){

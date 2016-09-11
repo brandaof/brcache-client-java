@@ -48,9 +48,6 @@ class BRCacheSender {
 		
 		out.write(BrCacheConnectionImp.CRLF_DTA);
 		
-		out.write(BrCacheConnectionImp.BOUNDARY_DTA);
-		out.write(BrCacheConnectionImp.CRLF_DTA);
-		
 		out.flush();
 		
 	}

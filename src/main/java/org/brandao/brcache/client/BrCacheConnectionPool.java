@@ -169,9 +169,6 @@ public class BrCacheConnectionPool {
     void release(BrCacheConnection con){
     	synchronized(this){
 	        try{
-	        	if(!con.isAutoCommit()){
-	        		con.rollback();
-	        	}
 	            this.instances.put(new BrCacheConnectionProxy(con, this));
 	        }
 	        catch(Throwable e){
