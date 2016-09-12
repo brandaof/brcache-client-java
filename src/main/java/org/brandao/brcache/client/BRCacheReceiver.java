@@ -115,9 +115,9 @@ class BRCacheReceiver {
 				BrCacheConnectionImp.VALUE_RESULT_DTA.length + 1, 
 				(byte)32);
 		
-		String key       = new String(dataParams[0]);
-		int size         = Integer.parseInt(new String(dataParams[1]));
-		int flags        = Integer.parseInt(new String(dataParams[2]));
+		String key       = ArraysUtil.toString(dataParams[0]);
+		int size         = ArraysUtil.toInt(dataParams[1]);
+		int flags        = ArraysUtil.toInt(dataParams[2]);
 		
 		if(size > 0){
 			byte[] dta = new byte[size];
@@ -216,7 +216,7 @@ class BRCacheReceiver {
 		
 		if(!ArraysUtil.startsWith(var_name, result)){
 			byte[][] parts = ArraysUtil.split(result, 0, (byte)' ');
-			return new String(parts[1]);
+			return ArraysUtil.toString(parts[1]);
 		}
 		else{
 			Error err = this.parseError(result);
@@ -246,7 +246,7 @@ class BRCacheReceiver {
 	}
 	
 	private Error parseError(byte[] value){
-		String error   = new String(value);
+		String error   = ArraysUtil.toString(value);
 		String codeSTR = error.substring(6, 10);
 		String message = error.substring(12, error.length());
 		return new Error(Integer.parseInt(codeSTR), message);
