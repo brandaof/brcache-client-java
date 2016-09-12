@@ -152,7 +152,7 @@ public class BufferedInputStream extends InputStream{
     
     public byte[] readLine() throws IOException{
     	
-    	ByteArrayOutputStream bout = new ByteArrayOutputStream(128);
+    	ByteArrayOutputStream bout = new ByteArrayOutputStream(64);
     	int startOff  = this.offset;
     	
     	for(;;){
