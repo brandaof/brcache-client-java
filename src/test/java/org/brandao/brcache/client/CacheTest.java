@@ -10,7 +10,7 @@ public class CacheTest extends TestCase{
 
 	private static final String SERVER_HOST	= "localhost";
 
-	private static final int SERVER_PORT	= 8084;
+	private static final int SERVER_PORT	= 1044;
 	
 	private static final String KEY			= "teste";
 
