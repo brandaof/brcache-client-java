@@ -26,11 +26,11 @@ class BRCacheReceiver {
 
 		byte[] result = this.getLine();
 		
-		if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA, result)){
+		if(result[0] == 's'){
 			return false;
 		}
 		else
-		if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA, result)){
+		if(result[0] == 'r'){
 			return true;
 		}
 		else{
