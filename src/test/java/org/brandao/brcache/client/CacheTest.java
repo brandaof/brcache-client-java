@@ -23,7 +23,6 @@ public class CacheTest extends TestCase{
 	@Override
 	public void setUp(){
 		Configuration config = new Configuration();
-		config.setProperty("memory_access_type", "unsafe");
 		this.server = new BrCacheServer(config);
 		EventQueue.invokeLater(new Runnable(){
 
