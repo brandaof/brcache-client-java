@@ -53,7 +53,7 @@ public interface BrCacheConnection {
      * @param key chave associada ao valor.
      * @param value valor para ser associado à chave.
      * @param maxAliveTime tempo máximo de vida do valor no cache.
-     * @return o valor anterior associado à chave.
+	 * @return <code>true</code> se o valor for substituido. Caso contrário, <code>false</code>.
      * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
      */
 	boolean replace(

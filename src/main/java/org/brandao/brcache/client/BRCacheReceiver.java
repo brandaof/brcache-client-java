@@ -26,17 +26,16 @@ class BRCacheReceiver {
 
 		byte[] result = this.getLine();
 		
-		if(result[0] == 's'){
-			return false;
+		switch (result[0]) {
+			case 's':
+				return false;
+			case 'r':
+				return true;
+			default:
+				Error err = this.parseError(result);
+				throw new CacheException(err.code, err.message);
 		}
-		else
-		if(result[0] == 'r'){
-			return true;
-		}
-		else{
-			Error err = this.parseError(result);
-			throw new CacheException(err.code, err.message);
-		}
+		
 	}
 
 	public boolean processReplaceResult() throws IOException, CacheException{
@@ -47,16 +46,14 @@ class BRCacheReceiver {
 		
 		byte[] result = this.getLine();
 		
-		if(Arrays.equals(BrCacheConnectionImp.NOT_STORED_DTA, result)){
-			return false;
-		}
-		else
-		if(Arrays.equals(BrCacheConnectionImp.REPLACE_SUCCESS_DTA, result)){
-			return true;
-		}
-		else{
-			Error err = this.parseError(result);
-			throw new CacheException(err.code, err.message);
+		switch (result[0]) {
+			case 'r':
+				return true;
+			case 'n':
+				return false;
+			default:
+				Error err = this.parseError(result);
+				throw new CacheException(err.code, err.message);
 		}
 		
 	}
@@ -145,16 +142,14 @@ class BRCacheReceiver {
 		 */
 		byte[] result = this.getLine();
 
-		if(Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, result)){
-			return true;
-		}
-		else
-		if(Arrays.equals(BrCacheConnectionImp.NOT_FOUND_DTA, result)){
-			return false;
-		}
-		else{
-			Error err = this.parseError(result);
-			throw new CacheException(err.code, err.message);
+		switch (result[0]) {
+			case 'o':
+				return true;
+			case 'n':
+				return false;
+			default:
+				Error err = this.parseError(result);
+				throw new CacheException(err.code, err.message);
 		}
 		
 	}
@@ -166,16 +161,14 @@ class BRCacheReceiver {
 		 */
 		byte[] result = this.getLine();
 
-		if(Arrays.equals(BrCacheConnectionImp.PUT_SUCCESS_DTA, result)){
-			return true;
-		}
-		else
-		if(Arrays.equals(BrCacheConnectionImp.NOT_STORED_DTA, result)){
-			return false;
-		}
-		else{
-			Error err = this.parseError(result);
-			throw new CacheException(err.code, err.message);
+		switch (result[0]) {
+			case 's':
+				return true;
+			case 'n':
+				return false;
+			default:
+				Error err = this.parseError(result);
+				throw new CacheException(err.code, err.message);
 		}
 		
 	}
@@ -199,7 +192,7 @@ class BRCacheReceiver {
 		 */
 		byte[] result = this.getLine();
 
-		if(!Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, result)){
+		if(result[0] != 'o'){
 			Error err = this.parseError(result);
 			throw new CacheException(err.code, err.message);
 		}
@@ -232,7 +225,7 @@ class BRCacheReceiver {
 		 */
 		byte[] result = this.getLine();
 
-		if(!Arrays.equals(BrCacheConnectionImp.SUCCESS_DTA, result)){
+		if(result[0] != 'o'){
 			Error err = this.parseError(result);
 			throw new CacheException(err.code, err.message);
 		}
