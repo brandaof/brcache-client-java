@@ -762,7 +762,7 @@ public class TXCacheTest extends TestCase{
 			fail();
 		}
 		catch(CacheException e){
-			if(e.getCode() != 1003 || !e.getMessage().equals("timeToLive is invalid!")){
+			if(e.getCode() != 1004 || !e.getMessage().equals("Bad command syntax error!")){
 				fail();
 			}
 				
@@ -809,7 +809,7 @@ public class TXCacheTest extends TestCase{
 			fail();
 		}
 		catch(CacheException e){
-			if(e.getCode() != 1003 || !e.getMessage().equals("timeToIdle is invalid!")){
+			if(e.getCode() != 1004 || !e.getMessage().equals("Bad command syntax error!")){
 				fail();
 			}
 				
