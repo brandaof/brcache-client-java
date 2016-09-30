@@ -363,8 +363,8 @@ class BrCacheConnectionImp implements BrCacheConnection{
     
     public void rollback() throws CacheException{
     	try{
-    		this.sender.executeCommitTransaction();
-    		this.receiver.processCommitTransactionResult();
+    		this.sender.executeRollbackTransaction();
+    		this.receiver.processRollbackTransactionResult();
     	}
     	catch(CacheException e){
     		throw e;

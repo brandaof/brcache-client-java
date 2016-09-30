@@ -52,7 +52,8 @@ public interface BrCacheConnection {
      * Substitui o valor associado à chave somente se ele existir.
      * @param key chave associada ao valor.
      * @param value valor para ser associado à chave.
-     * @param maxAliveTime tempo máximo de vida do valor no cache.
+	 * @param timeToLive é a quantidade máxima de tempo que um item expira após sua criação.
+	 * @param timeToIdle é a quantidade máxima de tempo que um item expira após o último acesso.
 	 * @return <code>true</code> se o valor for substituido. Caso contrário, <code>false</code>.
      * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
      */
@@ -64,7 +65,8 @@ public interface BrCacheConnection {
 	 * @param key chave associada ao valor.
 	 * @param oldValue valor esperado associado à chave.
 	 * @param newValue valor para ser associado à chave.
-	 * @param maxAliveTime tempo máximo de vida do valor no cache.
+	 * @param timeToLive é a quantidade máxima de tempo que um item expira após sua criação.
+	 * @param timeToIdle é a quantidade máxima de tempo que um item expira após o último acesso.
 	 * @return <code>true</code> se o valor for substituido. Caso contrário, <code>false</code>.
      * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
@@ -76,7 +78,8 @@ public interface BrCacheConnection {
 	 * Associa o valor a chave somente se a chave não estiver associada a um valor.
 	 * @param key chave associada ao valor.
 	 * @param value valor para ser associado à chave.
-	 * @param maxAliveTime tempo máximo de vida do valor no cache.
+	 * @param timeToLive é a quantidade máxima de tempo que um item expira após sua criação.
+	 * @param timeToIdle é a quantidade máxima de tempo que um item expira após o último acesso.
 	 * @return valor anterior associado à chave.
      * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
@@ -87,7 +90,8 @@ public interface BrCacheConnection {
 	 * Associa o valor a chave somente se a chave não estiver associada a um valor.
 	 * @param key chave associada ao valor.
 	 * @param value valor para ser associado à chave.
-	 * @param maxAliveTime tempo máximo de vida do valor no cache.
+	 * @param timeToLive é a quantidade máxima de tempo que um item expira após sua criação.
+	 * @param timeToIdle é a quantidade máxima de tempo que um item expira após o último acesso.
 	 * @return <code>true</code> se o valor for substituído. Caso contrário, <code>false</code>.
      * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
@@ -129,7 +133,7 @@ public interface BrCacheConnection {
 	/**
 	 * Remove o valor assoiado à chave somente se ele for igual a um determinado valor.
 	 * @param key chave associada ao valor.
-	 * @return valor para ser associado à chave.
+	 * @param value valor associado à chave.
 	 * @return <code>true</code> se o valor for removido. Caso contrário, <code>false</code>.
      * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
 	 */
