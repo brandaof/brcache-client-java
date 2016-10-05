@@ -24,7 +24,7 @@ import java.io.OutputStream;
  *
  * @author Brandao
  */
-public class BufferedOutputStream extends OutputStream{
+class BufferedOutputStream extends OutputStream{
     
     private int offset;
     

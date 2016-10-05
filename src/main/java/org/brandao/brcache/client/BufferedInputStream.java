@@ -26,7 +26,7 @@ import java.util.Arrays;
  *
  * @author Brandao
  */
-public class BufferedInputStream extends InputStream{
+class BufferedInputStream extends InputStream{
     
     private int offset;
     

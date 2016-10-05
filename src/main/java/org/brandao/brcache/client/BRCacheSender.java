@@ -21,7 +21,6 @@ class BRCacheSender {
 		/*
 			 put <key> <timeToLive> <timeToIdle> <size> <reserved>\r\n
 			 <data>\r\n
-			 end\r\n 
 		 */
 		
 		byte[] data = this.toBytes(value);
