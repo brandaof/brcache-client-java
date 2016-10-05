@@ -35,13 +35,12 @@ public interface BrCacheConnection {
     /**
      * Fecha a conexão com o servidor.
      * 
-     * @throws CacheException Lançada caso ocorra alguma falha ao tentar se
-     * fechar a conexão com o servidor.
+     * @throws CacheException Lançada caso ocorra alguma falha ao tentar fechar a conexão com o servidor.
      */
     void close() throws CacheException;
     
     /**
-     * Verifica se a conexão foi fechada.
+     * Verifica se a conexão está fechada.
      * @return <code>true</code> se a conexão está fechada. Caso contrátio, <code>false</code>.
      */
     boolean isClosed();
@@ -75,7 +74,7 @@ public interface BrCacheConnection {
 			Object newValue, long timeToLive, long timeToIdle) throws CacheException;
 	
 	/**
-	 * Associa o valor a chave somente se a chave não estiver associada a um valor.
+	 * Associa o valor à chave somente se a chave não estiver associada a um valor.
 	 * @param key chave associada ao valor.
 	 * @param value valor para ser associado à chave.
 	 * @param timeToLive é a quantidade máxima de tempo que um item expira após sua criação.
@@ -87,7 +86,7 @@ public interface BrCacheConnection {
 			String key, Object value, long timeToLive, long timeToIdle) throws CacheException;
 
 	/**
-	 * Associa o valor a chave somente se a chave não estiver associada a um valor.
+	 * Associa o valor à chave somente se a chave não estiver associada a um valor.
 	 * @param key chave associada ao valor.
 	 * @param value valor para ser associado à chave.
 	 * @param timeToLive é a quantidade máxima de tempo que um item expira após sua criação.
@@ -120,8 +119,7 @@ public interface BrCacheConnection {
     Object get(String key, boolean forUpdate) throws CacheException;
 
 	/**
-     * Obtém o valor associado à chave bloqueando ou não 
-     * seu acesso as demais transações.
+     * Obtém o valor associado à chave.
      * @param key chave associada ao valor.
      * @return valor associado à chave ou <code>null</code>.
      * @throws CacheException Lançada se ocorrer alguma falha com o servidor.
@@ -153,7 +151,7 @@ public interface BrCacheConnection {
      * estiver ligado, todas as operações serão tratadas como transações individuais. Caso contrário,
      * as operações serão agrupadas em uma transação que deve ser confirmada com o método {@link #commit()} ou
      * descartadas com o método {@link #rollback()}. Por padrão, cada nova conexão inicia com o 
-     * modo de confirmação automática ligado. 
+     * modo de confirmação automática ligada. 
      * @param value <code>true</code> para ligar o modo de confirmação automática. Caso contrário, <code>false</code>. 
      * @throws CacheException Lançada se o estado desejado já estiver em vigor ou se a conexão estiver fechada.
      */

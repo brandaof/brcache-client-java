@@ -9,7 +9,7 @@ import java.util.List;
  * @author Brandao
  *
  */
-public class ArraysUtil {
+class ArraysUtil {
 
 	private static final int NEGATIVE_INT   = 0xffffffff;
 	
