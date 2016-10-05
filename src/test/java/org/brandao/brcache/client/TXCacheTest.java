@@ -66,6 +66,54 @@ public class TXCacheTest extends TestCase{
 		}
 	}
 	
+	public void testCommitFail() throws Throwable{
+		BrCacheConnection con = this.connectionPool.getConnection();
+		try{
+			con.commit();
+			fail("expected CacheException");
+		}
+		catch(CacheException e){
+			if(e.getCode() != 1013){
+				fail();
+			}
+		}
+	}
+	
+	public void testCommit() throws Throwable{
+		String prefixKEY = "testCommit:";
+		BrCacheConnection con = this.connectionPool.getConnection();
+		con.remove(prefixKEY + KEY);
+		con.setAutoCommit(false);
+		assertFalse(con.put(prefixKEY + KEY, VALUE, 0, 0));
+		assertEquals(VALUE, con.get(prefixKEY + KEY));
+		con.commit();
+		assertEquals(VALUE, con.get(prefixKEY + KEY));
+	}
+
+	public void testRollbackFail() throws Throwable{
+		BrCacheConnection con = this.connectionPool.getConnection();
+		try{
+			con.rollback();
+			fail("expected CacheException");
+		}
+		catch(CacheException e){
+			if(e.getCode() != 1013){
+				fail();
+			}
+		}
+	}
+	
+	public void testRollback() throws Throwable{
+		String prefixKEY = "testRollback:";
+		BrCacheConnection con = this.connectionPool.getConnection();
+		con.remove(prefixKEY + KEY);
+		con.setAutoCommit(false);
+		assertFalse(con.put(prefixKEY + KEY, VALUE, 0, 0));
+		assertEquals(VALUE, con.get(prefixKEY + KEY));
+		con.rollback();
+		assertNull(con.get(prefixKEY + KEY));
+	}
+	
 	/* replace */
 	
 	public void testReplace() throws Throwable{
