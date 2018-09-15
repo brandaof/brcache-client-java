@@ -1,6 +1,9 @@
 package org.brandao.brcache.client;
 
 import java.awt.EventQueue;
+import java.io.IOException;
+import java.net.UnknownHostException;
+
 import org.brandao.brcache.Configuration;
 import org.brandao.brcache.server.BrCacheServer;
 
@@ -21,7 +24,7 @@ public class CacheTest extends TestCase{
 	private BrCacheServer server;
 	
 	@Override
-	public void setUp(){
+	public void setUp() throws UnknownHostException{
 		Configuration config = new Configuration();
 		this.server = new BrCacheServer(config);
 		EventQueue.invokeLater(new Runnable(){
@@ -41,13 +44,10 @@ public class CacheTest extends TestCase{
 	}
 
 	@Override
-	public void tearDown(){
-		try{
-			this.server.stop();
-		}
-		catch(Throwable e){
-			e.printStackTrace();
-		}
+	public void tearDown() throws IOException{
+		this.server.stop();
+		this.server = null;
+		System.gc();
 	}
 	
 	/* replace */

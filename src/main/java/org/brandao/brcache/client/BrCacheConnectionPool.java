@@ -199,7 +199,7 @@ public class BrCacheConnectionPool {
     }
 
     /**
-     * Destroi o pool de conexões.
+     * Destrói o pool de conexões.
      */
     public synchronized void shutdown(){
     }

@@ -1,6 +1,8 @@
 package org.brandao.brcache.client;
 
 import java.awt.EventQueue;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 import org.brandao.brcache.Configuration;
 import org.brandao.brcache.client.TXCacheHelper.ConcurrentTask;
@@ -25,7 +27,7 @@ public class TXCacheTest extends TestCase{
 	private BrCacheServer server;
 	
 	@Override
-	public void setUp(){
+	public void setUp() throws UnknownHostException, CacheException{
 		Configuration config = new Configuration();
 
 		config.setProperty("transaction_support", "true");
@@ -46,24 +48,16 @@ public class TXCacheTest extends TestCase{
 			
 		});
 		
-		try{
-			//inicia o pool de conexões
-			this.connectionPool = 
-					new BrCacheConnectionPool(SERVER_HOST, SERVER_PORT, 1, 5);
-		}
-		catch(Throwable e){
-			throw new RuntimeException(e);
-		}
+		//inicia o pool de conexões
+		this.connectionPool = 
+				new BrCacheConnectionPool(SERVER_HOST, SERVER_PORT, 1, 5);
 	}
 
 	@Override
-	public void tearDown(){
-		try{
-			this.server.stop();
-		}
-		catch(Throwable e){
-			e.printStackTrace();
-		}
+	public void tearDown() throws IOException{
+		this.server.stop();
+		this.server = null;
+		System.gc();
 	}
 	
 	public void testCommitFail() throws Throwable{

@@ -1,12 +1,14 @@
 package org.brandao.brcache.client;
 
 import java.awt.EventQueue;
-import java.io.*;
-import java.util.Random;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import junit.framework.TestCase;
 
 import org.brandao.brcache.Configuration;
-import org.brandao.brcache.collections.Collections;
 import org.brandao.brcache.server.BrCacheServer;
 
 /**
@@ -38,12 +40,12 @@ public class StressCacheTest extends TestCase{
             "kdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjgh" +
             "kdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjghkdjfgh kldjfghkdfjgh klsdjfghkldsjfhgksdhfg kfjgh sdkjgh";
          
-    private static int index = 0;
-    
 	private BrCacheServer server;
+	
+	private BrCacheConnectionPool pool;
     
 	@Override
-	public void setUp(){
+	public void setUp() throws UnknownHostException, CacheException{
 		Configuration config = new Configuration();
 		this.server = new BrCacheServer(config);
 		EventQueue.invokeLater(new Runnable(){
@@ -60,89 +62,42 @@ public class StressCacheTest extends TestCase{
 			
 		});
 		
+		 pool = new BrCacheConnectionPool("localhost", 1044, 1, 50);
+		 
 	}
 
 	@Override
-	public void tearDown(){
-		try{
-			this.server.stop();
-		}
-		catch(Throwable e){
-			e.printStackTrace();
-		}
-	}    
+	public void tearDown() throws IOException{
+		this.pool.shutdown();
+		this.server.stop();
+		this.server = null;
+		this.pool   = null;
+		System.gc();
+	}
+	
     public void test() throws CacheException, InterruptedException {
         
-    	final BrCacheConnectionPool pool = new BrCacheConnectionPool("localhost", 1044, 1, 50);
-        
-        for(int i=0;i<4;i++){
-            Thread th; 
-            if(i % 2 == 0){
-                th = new Thread(){
-                    public void run(){
-                        while(true){
-                            try{
-                                int rv = index++;
-                                String key = String.valueOf(rv);
-                                String value = key + text;
-                                BrCacheConnection con = null;
-                                try{
-                                	con = pool.getConnection();
-                                	con.put(key, value, 0, 0);
-                                }
-                                finally{
-                                	if(con != null){
-                                		con.close();
-                                	}
-                                }
-                                
-                            }
-                            catch(Exception e){
-                                e.printStackTrace();
-                            }
-                            index++;
-                        }
-                    }
-                };
-            }
-            else{
-                th = new Thread(){
-                    public void run(){
-                        Random r = new Random();
-                        while(true){
-                            int rv = r.nextInt(index);
-                            String key = String.valueOf(rv);
-                            String value = key + text;
-                            BrCacheConnection con = null;
+		int totalClients  = 100;
+		int maxOperations = 100;
+		CountDownLatch countDown = new CountDownLatch(totalClients);
+		AtomicInteger keyCount   = new AtomicInteger();
+		Thread[] clients         = new Thread[totalClients];
+		
+		for(int i=0;i<totalClients;i++){
+			if(i % 2 == 0){
+				clients[i] = new Thread(new PutClient(pool, keyCount, maxOperations, countDown, text));
+			}
+			else{
+				clients[i] = new Thread(new GetClient(pool, keyCount, maxOperations, countDown, text));
+			}
+		}
+    	
+		for(Thread c: clients){
+			c.start();
+		}
 
-                            try{
-	                            try{
-	                            	con = pool.getConnection();
-	                                String val = (String) con.get(key);
-	                                if(val != null){
-	                                    assertEquals(value, val);
-	                                }
-	                            }
-	                            finally{
-	                            	if(con != null){
-	                            		con.close();
-	                            	}
-	                            }
-                            }
-                            catch(Throwable e){
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                };
-                
-            }
-            
-            th.start();
-        }
-        
-        Thread.sleep(999999999);
-        
+		countDown.await();
+		
     }    
     
 }
