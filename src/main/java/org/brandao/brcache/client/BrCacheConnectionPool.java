@@ -131,7 +131,7 @@ public class BrCacheConnectionPool {
     }
 
     /**
-     * Tenta obtém uma conexão.
+     * Tenta obter uma conexão.
      * @return Conexão.
      * @throws CacheException Lançada se ocorrer uma falha ao tentar 
      * recuperar ou criar uma conexão.
